@@ -4,10 +4,15 @@ import QtQuick.Window 2.12
 
 Window{
     id: window
-    width: 860
-    height: 680
-    color: "#242424"
+    width: config.windowsWidth
+    height: config.windowsHeight
+    color: config.bgColor
     visible: true
+    signal getDevice(string str);
+
+    QtConfig{
+        id:config
+    }
 
     BluetoothBody{
         id: rootBody
@@ -25,10 +30,7 @@ Window{
         width: 0
     }
 
-    Connections{
-        target: rootBody
-        onShowListClicked:{
-           rootList.doClick()
-        }
+    ConnectionsAddr{
+        id: connections
     }
 }

@@ -5,6 +5,7 @@ Rectangle{
     color: "#424242"
     property bool aniState: false
     property int  with_: 0
+    property bool isLooking: false
 
     ListShow{
        id: listShow
@@ -20,16 +21,23 @@ Rectangle{
         running: false
     }
 
-    onWidthChanged: {
-        with_ = root.width;
-    }
-
     function doClick(){
         if(!widthAni.running){
             aniState = !aniState;
+            if(aniState && !isLooking){
+                isLooking= false
+                BtoothManager.startDisCoverBlueTooth()
+            }
+            else{
+//                BtoothManager.stopDisCoverBlueTooth()
+//                listShow.removeAll()
+            }
+
             widthAni.start()
         }
+    }
 
-        listShow.removeList("1123")
+    function addList(str){
+        listShow.addList(str)
     }
 }

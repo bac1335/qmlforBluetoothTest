@@ -3,15 +3,18 @@ import QtQuick 2.0
 Item {
     id: root
     ListView{
+        id: listView
         anchors.fill: parent
+        highlight:highlightrec
         delegate: component
         model: listModel
-
+        currentIndex: -1
     }
 
     Component{
         id: component
         Item{
+            id: listItem
             width: root.width
             height: 40
             visible: width > comText.implicitWidth?true:false
@@ -23,35 +26,44 @@ Item {
                 font.pixelSize: 15
                 font.family: "微软雅黑"
             }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked:{
+                    if(listItem.ListView.view.currentIndex === index){
+                       listItem.ListView.view.currentIndex = -1
+                    }
+                    else{
+                        listItem.ListView.view.currentIndex = index
+                    }
+                }
+            }
         }
     }
+
+    Component{
+        id:highlightrec
+        Rectangle{
+            width: root.width
+            height: 40
+            color: "gray"
+            radius: 5
+            border.width: 1
+            border.color: "white"
+        }
+   }
 
     ListModel{
         id: listModel
-        ListElement{
-            name: "4532"
-        }
-        ListElement{
-            name: "1123"
-        }
-        ListElement{
-            name: "2222"
-        }
-        ListElement{
-            name: "1123"
-        }
-        ListElement{
-            name: "1123"
-        }
-        ListElement{
-            name: "1123"
-        }
-        ListElement{
-            name: "411231"
-        }
     }
 
     function addList(addName){
+        console.log("================================" + addName)
+        for(var i = 0;i<listModel.count;i++){
+            if(listModel.get(i).name === addName){
+                return;
+            }
+        }
         listModel.append({name: addName})
     }
 
@@ -62,6 +74,12 @@ Item {
                 removeList(removeName)
                 break;
             }
+        }
+    }
+
+    function removeAll(){
+        if(listModel.count>0){
+            listModel.clear()
         }
     }
 }

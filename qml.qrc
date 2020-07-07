@@ -4,5 +4,7 @@
         <file>BluetoothBody.qml</file>
         <file>BluetoothList.qml</file>
         <file>ListShow.qml</file>
+        <file>QtConfig.qml</file>
+        <file>ConnectionsAddr.qml</file>
     </qresource>
 </RCC>
