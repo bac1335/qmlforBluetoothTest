@@ -13,6 +13,9 @@ private:
 
 private:
     bool        m_bIsFaceTakenOk = false;
+    QString     m_id;
+    QString     m_appKey;
+    QString     m_secretKey;
 
 };
 

@@ -10,8 +10,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include($$PWD/baiduface/baiduface.pri)
 include($$PWD/tool/tool.pri)
+include($$PWD/curl/curl.pri)
 
-INCLUDEPATH += tool baiduface controlmanager
+INCLUDEPATH += tool baiduface controlmanager curl/include/
 
 TARGET = bluetoothtest
 TEMPLATE = app

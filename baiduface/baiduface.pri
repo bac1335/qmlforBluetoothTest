@@ -1,4 +1,4 @@
-INCLUDEPATH += aip-cpp-sdk-0.8.1
+INCLUDEPATH += $$PWD/aip-cpp-sdk-0.8.1 $$PWD/aip-cpp-sdk-0.8.1/base
 
 HEADERS += \
     $$PWD/aip-cpp-sdk-0.8.1/base/base.h \
