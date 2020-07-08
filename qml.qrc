@@ -6,5 +6,6 @@
         <file>qml/ListShow.qml</file>
         <file>qml/main.qml</file>
         <file>qml/QtConfig.qml</file>
+        <file>skin/loading/loading.png</file>
     </qresource>
 </RCC>

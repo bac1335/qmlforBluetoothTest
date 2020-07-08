@@ -4,11 +4,30 @@ Item {
     id: root
     ListView{
         id: listView
+        visible: count>0?true:false
         anchors.fill: parent
         highlight:highlightrec
         delegate: component
         model: listModel
         currentIndex: -1
+    }
+
+    Image {
+        id: loading
+        width: 50
+        height: 50
+        anchors.centerIn: parent
+        visible: listView.width>100&&listView.count<=0?true:false
+        source: "qrc:/skin/loading/loading.png"
+
+        Timer{
+            interval: 5
+            repeat: true
+            running: loading.visible
+            onTriggered: {
+                loading.rotation++
+            }
+        }
     }
 
     Component{

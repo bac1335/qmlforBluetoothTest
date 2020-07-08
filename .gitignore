@@ -2,6 +2,7 @@
 Makefile
 Makefile.Debug
 Makefile.Release
-bluetoothtest.pro.user
 debug/
 release/
+toolsoft.pro.user
+

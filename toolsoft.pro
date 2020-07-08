@@ -9,15 +9,14 @@ QT       += core gui bluetooth qml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include($$PWD/baiduface/baiduface.pri)
-include($$PWD/tool/tool.pri)
-include($$PWD/curl/curl.pri)
+include($$PWD/ToolManager/ToolManager.pri)
 
-INCLUDEPATH += tool baiduface controlmanager curl/include/
+INCLUDEPATH += ToolManager baiduface controlmanager
 
 TARGET = bluetoothtest
 TEMPLATE = app
 
-INCLUDEPATH += bluetooth
+INCLUDEPATH += bluetooth tool
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -36,12 +35,14 @@ SOURCES += \
         controlmanager/boothmanager.cpp \
         controlmanager/llscontrol.cpp \
         main.cpp \
+        tool/llsetting.cpp \
         widget.cpp
 
 HEADERS += \
         bluetooth/boothmanager.h \
         controlmanager/boothmanager.h \
         controlmanager/llscontrol.h \
+        tool/llsetting.h \
         widget.h
 
 # Default rules for deployment.
