@@ -1,9 +1,9 @@
-#ifndef WIDGET_H
+﻿#ifndef WIDGET_H
 #define WIDGET_H
 #include <QObject>
 
 class QQmlApplicationEngine;
-class BoothManage;
+class LLSControlManager;
 class Widget : public QObject
 {
     Q_OBJECT
@@ -17,8 +17,7 @@ private:
 
 private:
     QQmlApplicationEngine*      m_pEngle = nullptr;
-    BoothManage*                m_pBoothManager = nullptr;
-
+    LLSControlManager*          m_pLLsManager = nullptr;
 };
 
 #endif // WIDGET_H

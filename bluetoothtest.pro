@@ -8,6 +8,11 @@ QT       += core gui bluetooth qml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+include($$PWD/baiduface/baiduface.pri)
+include($$PWD/tool/tool.pri)
+
+INCLUDEPATH += tool baiduface controlmanager
+
 TARGET = bluetoothtest
 TEMPLATE = app
 
@@ -27,12 +32,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        bluetooth/boothmanager.cpp \
+        controlmanager/boothmanager.cpp \
+        controlmanager/llscontrol.cpp \
         main.cpp \
         widget.cpp
 
 HEADERS += \
         bluetooth/boothmanager.h \
+        controlmanager/boothmanager.h \
+        controlmanager/llscontrol.h \
         widget.h
 
 # Default rules for deployment.
