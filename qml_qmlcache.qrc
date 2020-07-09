@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<RCC>
+    <qresource prefix="/">
+        <file alias="skin/loading/loading.png">skin/loading/loading.png</file>
+    </qresource>
+</RCC>

@@ -194,7 +194,7 @@ namespace aip {
         {
             std::string response;
             Json::Value obj;
-            
+
             auto headers_for_sign = headers;
             auto temp_params = params;
             

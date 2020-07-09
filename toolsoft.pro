@@ -39,7 +39,6 @@ SOURCES += \
         widget.cpp
 
 HEADERS += \
-        bluetooth/boothmanager.h \
         controlmanager/boothmanager.h \
         controlmanager/llscontrol.h \
         tool/llsetting.h \
