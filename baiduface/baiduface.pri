@@ -16,7 +16,3 @@ HEADERS += \
     $$PWD/aip-cpp-sdk-0.8.1/nlp.h \
     $$PWD/aip-cpp-sdk-0.8.1/ocr.h \
     $$PWD/aip-cpp-sdk-0.8.1/speech.h \
-    $$PWD/baidufacemanager.h
-
-SOURCES += \
-    $$PWD/baidufacemanager.cpp

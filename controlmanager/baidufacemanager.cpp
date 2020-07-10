@@ -3,6 +3,8 @@
 #include <QVariant>
 #include <QDebug>
 #include "face.h"
+#include <QImage>
+#include <QFile>
 
 BaiduFaceManager::BaiduFaceManager(QObject *parent):
     QObject(parent)
@@ -32,9 +34,20 @@ void BaiduFaceManager::init()
 
         Json::Value result;
 
-        std::string image = "C:/Users/hasee/Desktop/test.jpg";
 
-        std::string image_type = "BASE64";
+        QFile file("C:/Users/Administrator/Desktop/time.jpg");
+
+        QByteArray array;
+        if(file.open(QFile::ReadOnly)){
+            array =file.readAll().toBase64();
+            file.close();
+        }
+
+        if(array.isEmpty()) return;
+
+        std::string image = array.toStdString();
+
+        std::string image_type ="BASE64";
 
         // 调用人脸检测
       //  result = client.detect(image, image_type, aip::null);

@@ -32,6 +32,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        controlmanager/baidufacemanager.cpp \
         controlmanager/boothmanager.cpp \
         controlmanager/llscontrol.cpp \
         main.cpp \
@@ -39,6 +40,7 @@ SOURCES += \
         widget.cpp
 
 HEADERS += \
+        controlmanager/baidufacemanager.h \
         controlmanager/boothmanager.h \
         controlmanager/llscontrol.h \
         tool/llsetting.h \

@@ -1,6 +1,6 @@
 
 #LIBS += -L$$PWD/lib -llibcrypto -llibssl
-LIBS += -L$$PWD/lib -llibeay32 -lssleay32
+LIBS += -L$$PWD/lib -llibeay32
 
 INCLUDEPATH += $$PWD/include/openssl $$PWD/include/
 
