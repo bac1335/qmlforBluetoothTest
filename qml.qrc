@@ -9,5 +9,7 @@
         <file>qml/bluetooth/BluetoothList.qml</file>
         <file>qml/bluetooth/ListShow.qml</file>
         <file>qml/bluetooth/MainPage.qml</file>
+        <file>skin/button/turnLeft.png</file>
+        <file>skin/photo_error.png</file>
     </qresource>
 </RCC>

@@ -47,7 +47,7 @@ Window{
     StackView{
         id: stackPage
         anchors.fill: parent
-        initialItem: mainRootPage
+        initialItem: baiduFacePage
 //        pushEnter: Transition {
 //            id: pushEnter
 //            ParallelAnimation {
