@@ -1,11 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/BluetoothBody.qml</file>
-        <file>qml/BluetoothList.qml</file>
-        <file>qml/ConnectionsAddr.qml</file>
-        <file>qml/ListShow.qml</file>
         <file>qml/main.qml</file>
         <file>qml/QtConfig.qml</file>
         <file>skin/loading/loading.png</file>
+        <file>qml/bauduface/BaiduFaceMainPage.qml</file>
+        <file>qml/button/LLSBUtton.qml</file>
+        <file>qml/bluetooth/BluetoothBody.qml</file>
+        <file>qml/bluetooth/BluetoothList.qml</file>
+        <file>qml/bluetooth/ListShow.qml</file>
+        <file>qml/bluetooth/MainPage.qml</file>
     </qresource>
 </RCC>

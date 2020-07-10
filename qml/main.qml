@@ -1,6 +1,8 @@
-import QtQuick 2.0
+﻿import QtQuick 2.0
 import QtQuick.Window 2.12
-
+import QtQuick.Controls 2.5
+import "./bauduface"
+import "./bluetooth"
 
 Window{
     id: window
@@ -14,23 +16,54 @@ Window{
         id:config
     }
 
-    BluetoothBody{
-        id: rootBody
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        width: window.width - rootList.width
+    Component{
+        id: mainRootPage
+        MainPage{
+            id: mainRoo
+            Connections{
+                target: mainRoo
+                onSwitchPage:{
+                    console.log("======================================" + pageType)
+                    stackPage.pop()
+                    switch(pageType){
+                        case config.pageType_booth:
+
+                        break;
+                        case config.pageType_baiduFace:
+                            stackPage.replace(baiduFacePage)
+                        break;
+                    }
+                }
+            }
+        }
     }
 
-    BluetoothList{
-        id: rootList
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        width: 0
+    Component{
+        id: baiduFacePage
+        BaiduFaceMainPage{}
     }
 
-    ConnectionsAddr{
-        id: connections
+
+    StackView{
+        id: stackPage
+        anchors.fill: parent
+        initialItem: mainRootPage
+//        pushEnter: Transition {
+//            id: pushEnter
+//            ParallelAnimation {
+//                PropertyAction { property: "x"; value: pushEnter.ViewTransition.item.pos }
+//                NumberAnimation { properties: "y"; from: pushEnter.ViewTransition.item.pos + stackView.offset; to: pushEnter.ViewTransition.item.pos; duration: 400; easing.type: Easing.OutCubic }
+//                NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 800; easing.type: Easing.OutCubic }
+//            }
+//        }
+//        popExit: Transition {
+//            id: popExit
+//            ParallelAnimation {
+//                PropertyAction { property: "x"; value: popExit.ViewTransition.item.pos }
+//                NumberAnimation { properties: "y"; from: popExit.ViewTransition.item.pos; to: popExit.ViewTransition.item.pos + stackView.offset; duration: 400; easing.type: Easing.OutCubic }
+//                NumberAnimation { property: "opacity"; from: 1; to: 0; duration: 800; easing.type: Easing.OutCubic }
+//            }
+//        }
     }
+
 }
