@@ -97,7 +97,7 @@ Window{
          Image {
              id: priImg
              anchors.centerIn: parent
-//                 anchors.fill: parent
+//             anchors.fill: parent
 //             source: "file"
          }
 

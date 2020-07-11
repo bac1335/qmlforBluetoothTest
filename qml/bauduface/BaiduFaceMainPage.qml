@@ -4,7 +4,8 @@ import ".././button"
 
 Item {
     property int  pageType: config.pageType_baiduFace
-
+    signal sigReturnClicked()
+    signal sigImgPreview(string strpath)
     Flow{
         id: imgShow
         spacing: 10
@@ -20,6 +21,8 @@ Item {
         nameFilters: [ "*.jpg *.png"]
         onAccepted: {
             console.log("You chose: " + fileDialog.fileUrl)
+            sigImgPreview(fileDialog.fileUrl.toString())
+
             doChoiceImg(fileDialog.fileUrl)
         }
         onRejected: {
@@ -78,6 +81,7 @@ Item {
             }
 
             onClicked: {
+                sigReturnClicked()
                 console.log("trun_home_page")
             }
         }
