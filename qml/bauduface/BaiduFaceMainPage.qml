@@ -130,19 +130,36 @@ Item {
             anchors.centerIn: parent
             //             anchors.fill: parent
             //             source: "file"
+
+
+            Rectangle{
+                id: faceRecr
+                x: 0
+                y: 0
+                color: "transparent"
+                border.color: "red"
+                border.width: 1
+                width: 0
+                height: 0
+                rotation: 0
+                visible: false
+            }
+
         }
 
         Rectangle{
             id: imgDetail
             anchors.right: priImg.right
             anchors.top: priImg.top
-            width: priImg.implicitWidth * 2/5
-            height: priImg.implicitHeight * 3/5
+            width: priImg.implicitWidth * 1/3
+            height: /*priImg.implicitHeight * 3/5*/imgListDetial.implicitHeight
             opacity: 0.6
             color: "#808080"
             ListView{
                 id: imgListDetial
-                anchors.fill: parent
+//                anchors.fill: parent
+                width: parent.width
+                implicitHeight:30* count + 10*count
                 flickableDirection: Flickable.AutoFlickDirection
                 orientation: ListView.Vertical
                 spacing: 10
@@ -172,6 +189,15 @@ Item {
 
         function clearElement(){
             listModel.clear()
+        }
+
+        function setFaceRect(x1,y1,width1,height1,rotation1){
+            faceRecr.visible = true
+            faceRecr.x = x1
+            faceRecr.y = y1
+            faceRecr.width = width1
+            faceRecr.height = height1
+            faceRecr.rotation = rotation1
         }
 
         MouseArea{
@@ -265,24 +291,28 @@ Item {
     function doJsonData(str){
         var obj = JSON.parse(str)
 
-        var da = obj.result;
-        if(da != null){
+        if(obj.error_code == 0){
 
             preView.visible = true
             preView.loadImg(fileDialog.fileUrl.toString())
             sigImgPreview(fileDialog.fileUrl.toString())
             doChoiceImg(fileDialog.fileUrl)
 
-            var data = (da.face_list)[0]
+            var data = (obj.result.face_list)[0]
             if(data.hasOwnProperty("face_probability")){
                 console.log("===============doJsonData================== " + data.face_probability)
 
                 if(data.hasOwnProperty("age")){
                     listModel.addItem("age", data.age)
                 }
-                    if(data.hasOwnProperty("face_probability")){
-                        listModel.addItem("face_probability", data.face_probability)
-                    }
+                if(data.hasOwnProperty("face_probability")){
+                    listModel.addItem("face_probability", data.face_probability)
+                }
+
+                if(data.hasOwnProperty("location")){
+                    var rect = data.location
+                    preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation)
+                }
             }
         }
         else{
