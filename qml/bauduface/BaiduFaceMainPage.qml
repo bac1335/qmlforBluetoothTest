@@ -20,10 +20,14 @@ Item {
         folder: shortcuts.home
         nameFilters: [ "*.jpg *.png"]
         onAccepted: {
-            console.log("You chose: " + fileDialog.fileUrl)
-            sigImgPreview(fileDialog.fileUrl.toString())
+            var strpath = fileDialog.fileUrl.toString()
+            console.log("You chose: " + strpath)
 
-            doChoiceImg(fileDialog.fileUrl)
+            var str = BaiduFaceManager.start(strpath)
+            if(str !== ""){
+                 facePage.doJsonData(str)
+            }
+
         }
         onRejected: {
             console.log("Canceled")
@@ -87,6 +91,14 @@ Item {
         }
     }
 
+    ListModel{
+        id: listModel
+
+        function addItem(str1,str2){
+             listModel.append({name: str1,value: str2})
+         }
+    }
+
     LLSBUtton{
         id: faceshowBtn
         opacity: 0.8
@@ -104,6 +116,75 @@ Item {
             }
         }
 
+    }
+
+    Rectangle {
+        id: preView
+        anchors.fill: parent
+        visible: false
+        color: "#424242"
+        //         opacity: 0.6
+
+        Image {
+            id: priImg
+            anchors.centerIn: parent
+            //             anchors.fill: parent
+            //             source: "file"
+        }
+
+        Rectangle{
+            id: imgDetail
+            anchors.right: priImg.right
+            anchors.top: priImg.top
+            width: priImg.implicitWidth * 2/5
+            height: priImg.implicitHeight * 3/5
+            opacity: 0.6
+            color: "#808080"
+            ListView{
+                id: imgListDetial
+                anchors.fill: parent
+                flickableDirection: Flickable.AutoFlickDirection
+                orientation: ListView.Vertical
+                spacing: 10
+                model: listModel
+                delegate: Item{
+                    width: imgDetail.width
+                    height: 30
+                    Row{
+                        anchors.fill: parent
+                        anchors.topMargin: 10
+                        Text {
+                            color: "red"
+                            font.pixelSize: 18
+                            font.family: "微软雅黑"
+                            text: name + ":"
+                        }
+                        Text {
+                            color: "red"
+                            font.pixelSize: 18
+                            font.family: "微软雅黑"
+                            text: value
+                        }
+                    }
+                }
+            }
+        }
+
+        function clearElement(){
+            listModel.clear()
+        }
+
+        MouseArea{
+            anchors.fill: parent
+            onClicked: {
+                preView.visible = false
+                preView.clearElement()
+            }
+        }
+
+        function loadImg(imgPath){
+            priImg.source = imgPath
+        }
     }
 
     Component{
@@ -127,6 +208,51 @@ Item {
         }
     }
 
+    Component.onCompleted: {
+        return;
+        var data =
+                    {
+                        "cached" : 0,
+                        "error_code" : 0,
+                        "error_msg" : "SUCCESS",
+                        "log_id" : 555792018445,
+                        "result" :
+                        {
+                            "face_list" :
+                            [
+                                {
+                                    "age" : 23,
+                                    "angle" :
+                                    {
+                                        "pitch" : 18.420000000000002,
+                                        "roll" : -27.100000000000001,
+                                        "yaw" : 5.4400000000000004
+                                    },
+                                    "face_probability" : 1,
+                                    "face_token" : "1592af153cffde5b550141bc940c2290",
+                                    "liveness" :
+                                    {
+                                        "livemapscore" : 0.089999999999999997
+                                    },
+                                    "location" :
+                                    {
+                                        "height" : 362,
+                                        "left" : 283.41000000000003,
+                                        "rotation" : -21,
+                                        "top" : 295,
+                                        "width" : 369
+                                    }
+                                }
+                            ],
+                            "face_num" : 1
+                        },
+                        "timestamp" : 1594482024
+                    }
+
+
+        doJsonData(data)
+    }
+
     function doChoiceImg(img){
 
         var path = qsTr(img.toString())
@@ -134,5 +260,35 @@ Item {
         var obj = imgDelete.createObject(imgShow);
         console.log("=================================" + path)
         obj.setImage(path)
+    }
+
+    function doJsonData(str){
+        var obj = JSON.parse(str)
+
+        var da = obj.result;
+        if(da != null){
+
+            preView.visible = true
+            preView.loadImg(fileDialog.fileUrl.toString())
+            sigImgPreview(fileDialog.fileUrl.toString())
+            doChoiceImg(fileDialog.fileUrl)
+
+            var data = (da.face_list)[0]
+            if(data.hasOwnProperty("face_probability")){
+                console.log("===============doJsonData================== " + data.face_probability)
+
+                if(data.hasOwnProperty("age")){
+                    listModel.addItem("age", data.age)
+                }
+                    if(data.hasOwnProperty("face_probability")){
+                        listModel.addItem("face_probability", data.face_probability)
+                    }
+            }
+        }
+        else{
+            console.log("==========================================112")
+            //不是人物图像
+        }
+
     }
 }

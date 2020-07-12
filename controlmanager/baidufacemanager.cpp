@@ -17,13 +17,9 @@ void BaiduFaceManager::startFace()
 
 }
 
-void BaiduFaceManager::init()
+QString BaiduFaceManager::start(QString imgpath)
 {
-    m_id = LLSettings->getValue("APPTaken","AppID","").toString();
-    m_appKey = LLSettings->getValue("APPTaken","APIKey","").toString();
-    m_secretKey = LLSettings->getValue("APPTaken","SecretKey","").toString();
-
-    m_bIsFaceTakenOk = !(m_id.isEmpty() || m_appKey.isEmpty() || m_secretKey.isEmpty());
+    qDebug() << "--->lls<---" << __FUNCTION__  << imgpath << m_bIsFaceTakenOk;
 
     if(m_bIsFaceTakenOk){
         std::string app_id = m_id.toStdString();
@@ -34,16 +30,18 @@ void BaiduFaceManager::init()
 
         Json::Value result;
 
+        if(imgpath.contains("file:///")){
+            imgpath.replace("file:///","");
+        }
 
-        QFile file("C:/Users/Administrator/Desktop/time.jpg");
-
+        QFile file(imgpath);
         QByteArray array;
         if(file.open(QFile::ReadOnly)){
             array =file.readAll().toBase64();
             file.close();
         }
 
-        if(array.isEmpty()) return;
+        if(array.isEmpty()) return "";
 
         std::string image = array.toStdString();
 
@@ -63,6 +61,18 @@ void BaiduFaceManager::init()
         result = client.detect(image, image_type, options);
 
         qDebug() << "===========================" << result.toStyledString().c_str();
-
+        return result.toStyledString().c_str();
     }
+    else{
+        return "";
+    }
+}
+
+void BaiduFaceManager::init()
+{
+    m_id = LLSettings->getValue("APPTaken","AppID","").toString();
+    m_appKey = LLSettings->getValue("APPTaken","APIKey","").toString();
+    m_secretKey = LLSettings->getValue("APPTaken","SecretKey","").toString();
+
+    m_bIsFaceTakenOk = !(m_id.isEmpty() || m_appKey.isEmpty() || m_secretKey.isEmpty());
 }

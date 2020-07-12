@@ -52,8 +52,13 @@ Window{
             Connections{
                 target: facePage
                 onSigImgPreview:{
-                    preView.visible = true
-                    preView.loadImg(strpath)
+//                    preView.visible = true
+//                    preView.loadImg(strpath)
+//                    var str = BaiduFaceManager.start(strpath)
+//                    if(str !== ""){
+//                         facePage.doJsonData(str)
+//                    }
+                    
                 }
             }
         }
@@ -87,31 +92,31 @@ Window{
          }
      }
 
-     Rectangle {
-         id: preView
-         anchors.fill: parent
-         visible: false
-         color: "#424242"
-//         opacity: 0.6
+//     Rectangle {
+//         id: preView
+//         anchors.fill: parent
+//         visible: false
+//         color: "#424242"
+////         opacity: 0.6
 
-         Image {
-             id: priImg
-             anchors.centerIn: parent
-//                 anchors.fill: parent
-//             source: "file"
-         }
+//         Image {
+//             id: priImg
+//             anchors.centerIn: parent
+////             anchors.fill: parent
+////             source: "file"
+//         }
 
-         MouseArea{
-             anchors.fill: parent
-             onClicked: {
-                preView.visible = false
-             }
-         }
+//         MouseArea{
+//             anchors.fill: parent
+//             onClicked: {
+//                preView.visible = false
+//             }
+//         }
 
-         function loadImg(imgPath){
-             priImg.source = imgPath
-         }
-     }
+//         function loadImg(imgPath){
+//             priImg.source = imgPath
+//         }
+//     }
 
 
 

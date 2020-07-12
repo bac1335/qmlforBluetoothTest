@@ -7,6 +7,7 @@ class BaiduFaceManager : public QObject{
 public:
     explicit BaiduFaceManager(QObject* parent = nullptr);
     void startFace();
+    Q_INVOKABLE QString start(QString imgpath);
 
 private:
     void init();
