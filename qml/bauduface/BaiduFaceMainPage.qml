@@ -3,9 +3,11 @@ import QtQuick.Dialogs 1.0
 import ".././button"
 
 Item {
+    id: mainroot
+
     property int  pageType: config.pageType_baiduFace
     signal sigReturnClicked()
-    signal sigImgPreview(string strpath)
+
     Flow{
         id: imgShow
         spacing: 10
@@ -59,7 +61,6 @@ Item {
 
         MouseArea{
             cursorShape:Qt.DragCopyCursor
-//            acceptedButtons: Qt.NoButton
             hoverEnabled: true
             anchors.fill: parent
             onEntered: {
@@ -91,14 +92,6 @@ Item {
         }
     }
 
-    ListModel{
-        id: listModel
-
-        function addItem(str1,str2){
-             listModel.append({name: str1,value: str2})
-         }
-    }
-
     LLSBUtton{
         id: faceshowBtn
         opacity: 0.8
@@ -118,107 +111,59 @@ Item {
 
     }
 
-    Rectangle {
-        id: preView
-        anchors.fill: parent
-        visible: false
-        color: "#424242"
-        //         opacity: 0.6
 
-        Image {
-            id: priImg
-            anchors.centerIn: parent
-            //             anchors.fill: parent
-            //             source: "file"
+//    Loader{
+//        id: preLoader
 
+//    }
 
-            Rectangle{
-                id: faceRecr
-                x: 0
-                y: 0
-                color: "transparent"
-                border.color: "red"
-                border.width: 1
-                width: 0
-                height: 0
-                rotation: 0
-                visible: false
-            }
-
-        }
-
-        Rectangle{
-            id: imgDetail
-            anchors.right: priImg.right
-            anchors.top: priImg.top
-            width: priImg.implicitWidth * 1/3
-            height: /*priImg.implicitHeight * 3/5*/imgListDetial.implicitHeight
-            opacity: 0.6
-            color: "#808080"
-            ListView{
-                id: imgListDetial
-//                anchors.fill: parent
-                width: parent.width
-                implicitHeight:30* count + 10*count
-                flickableDirection: Flickable.AutoFlickDirection
-                orientation: ListView.Vertical
-                spacing: 10
-                model: listModel
-                delegate: Item{
-                    width: imgDetail.width
-                    height: 30
-                    Row{
-                        anchors.fill: parent
-                        anchors.topMargin: 10
-                        Text {
-                            color: "red"
-                            font.pixelSize: 18
-                            font.family: "微软雅黑"
-                            text: name + ":"
-                        }
-                        Text {
-                            color: "red"
-                            font.pixelSize: 18
-                            font.family: "微软雅黑"
-                            text: value
-                        }
-                    }
-                }
-            }
-        }
-
-        function clearElement(){
-            listModel.clear()
-        }
-
-        function setFaceRect(x1,y1,width1,height1,rotation1){
-            faceRecr.visible = true
-            faceRecr.x = x1
-            faceRecr.y = y1
-            faceRecr.width = width1
-            faceRecr.height = height1
-            faceRecr.rotation = rotation1
-        }
-
-        MouseArea{
+    Component{
+        id: preViewCom
+        Rectangle {
+            id: preView
             anchors.fill: parent
-            onClicked: {
-                preView.visible = false
-                preView.clearElement()
-            }
-        }
+            color: "#424242"
 
-        function loadImg(imgPath){
-            priImg.source = imgPath
+            Image {
+                id: priImg
+                anchors.centerIn: parent
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    preView.visible = false
+    //                preView.clearElement()
+                }
+               }
+             }
+
+            function setFaceRect(x1,y1,width1,height1,rotation1,jsonDetail){
+
+                var obj = rectFace.createObject(priImg)
+                obj.visible = true
+                obj.x = x1
+                obj.y = y1
+                obj.width = width1
+                obj.height = height1
+                obj.rotation = rotation1
+
+                obj.setDetail(jsonDetail)
+            }
+
+
+            function loadImg(imgPath){
+                priImg.source = imgPath
+            }
         }
     }
 
     Component{
-        id: imgDelete
+        id: imShow
         Image {
             id: imgshowDelete
             width: 150
             height: 150
+            property string imgPath: ""
 
             MouseArea{
                 onClicked: {
@@ -229,91 +174,114 @@ Item {
 //                    imgshowDelete.source = "qrc:/skin/photo_error.png"
             }
             function setImage(imgpath){
+                imgPath = imgpath
                 imgshowDelete.source = imgpath
             }
         }
     }
 
-    Component.onCompleted: {
-        return;
-        var data =
-                    {
-                        "cached" : 0,
-                        "error_code" : 0,
-                        "error_msg" : "SUCCESS",
-                        "log_id" : 555792018445,
-                        "result" :
-                        {
-                            "face_list" :
-                            [
-                                {
-                                    "age" : 23,
-                                    "angle" :
-                                    {
-                                        "pitch" : 18.420000000000002,
-                                        "roll" : -27.100000000000001,
-                                        "yaw" : 5.4400000000000004
-                                    },
-                                    "face_probability" : 1,
-                                    "face_token" : "1592af153cffde5b550141bc940c2290",
-                                    "liveness" :
-                                    {
-                                        "livemapscore" : 0.089999999999999997
-                                    },
-                                    "location" :
-                                    {
-                                        "height" : 362,
-                                        "left" : 283.41000000000003,
-                                        "rotation" : -21,
-                                        "top" : 295,
-                                        "width" : 369
-                                    }
-                                }
-                            ],
-                            "face_num" : 1
-                        },
-                        "timestamp" : 1594482024
+    Component{
+        id: rectFace
+        Rectangle{
+            id: rectFaceRec
+            x: 0
+            y: 0
+            transformOrigin: Item.TopLeft
+            color: "transparent"
+            border.color: "red"
+            border.width: 1
+            width: 0
+            height: 0
+            rotation: 0
+            visible: false
+
+            Item{
+                id: imgDetail
+                anchors.right: rectFaceRec.right
+                anchors.top: rectFaceRec.top
+                width: rectFaceRec.width
+                height:imgListDetial.implicitHeight
+                opacity: 0.6
+//                color: "#808080"
+
+                ListView{
+                    id: imgListDetial
+                    width: imgDetail.width
+                    implicitHeight:30* count + 10*count
+                    orientation: ListView.Vertical
+                    spacing: 10
+                    model: listModel2
+                    delegate: Item{
+                        width: imgDetail.width
+                        height: 30
+                        Row{
+                            anchors.fill: parent
+                            anchors.topMargin: 10
+                            Text {
+                                color: "red"
+                                font.pixelSize: 18
+                                font.family: "微软雅黑"
+                                text: name + ":"
+                            }
+                            Text {
+                                color: "red"
+                                font.pixelSize: 18
+                                font.family: "微软雅黑"
+                                text: value
+                            }
+                        }
                     }
+                }
+
+                ListModel{
+                    id: listModel2
+
+                    function addItem(str1,str2){
+
+                        listModel2.append({name: str1,value: str2})
+                    }
+                }
+            }
+
+            function setDetail(data){
+                listModel2.addItem("age",data.age)
+                listModel2.addItem("face_probability",data.face_probability)
+            }
 
 
-        doJsonData(data)
+        }
     }
 
     function doChoiceImg(img){
 
         var path = qsTr(img.toString())
         if(path == "") return
-        var obj = imgDelete.createObject(imgShow);
+        var obj = imShow.createObject(imgShow);
         console.log("=================================" + path)
         obj.setImage(path)
     }
 
     function doJsonData(str){
         var obj = JSON.parse(str)
-
         if(obj.error_code == 0){
 
-            preView.visible = true
+            var preView = preViewCom.createObject(mainroot)
             preView.loadImg(fileDialog.fileUrl.toString())
-            sigImgPreview(fileDialog.fileUrl.toString())
-            doChoiceImg(fileDialog.fileUrl)
-
             var data = (obj.result.face_list)[0]
             if(data.hasOwnProperty("face_probability")){
                 console.log("===============doJsonData================== " + data.face_probability)
 
-                if(data.hasOwnProperty("age")){
-                    listModel.addItem("age", data.age)
-                }
-                if(data.hasOwnProperty("face_probability")){
-                    listModel.addItem("face_probability", data.face_probability)
-                }
-
                 if(data.hasOwnProperty("location")){
                     var rect = data.location
-                    preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation)
+                    var jsonDetail = {"age": data.age,"face_probability":data.face_probability}
+
+                    preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation,jsonDetail)
+
                 }
             }
+
+            doChoiceImg(fileDialog.fileUrl)
+
         }
         else{
             console.log("==========================================112")

@@ -49,18 +49,18 @@ Window{
                 }
             }
 
-            Connections{
-                target: facePage
-                onSigImgPreview:{
-//                    preView.visible = true
-//                    preView.loadImg(strpath)
-//                    var str = BaiduFaceManager.start(strpath)
-//                    if(str !== ""){
-//                         facePage.doJsonData(str)
-//                    }
+//            Connections{
+//                target: facePage
+//                onSigImgPreview:{
+////                    preView.visible = true
+////                    preView.loadImg(strpath)
+////                    var str = BaiduFaceManager.start(strpath)
+////                    if(str !== ""){
+////                         facePage.doJsonData(str)
+////                    }
                     
-                }
-            }
+//                }
+//            }
         }
     }
 
