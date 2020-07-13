@@ -38,6 +38,7 @@ SOURCES += \
         controlmanager/llscontrol.cpp \
         main.cpp \
         tool/llsetting.cpp \
+        tool/llsnetworkdetection.cpp \
         widget.cpp
 
 HEADERS += \
@@ -45,6 +46,7 @@ HEADERS += \
         controlmanager/boothmanager.h \
         controlmanager/llscontrol.h \
         tool/llsetting.h \
+        tool/llsnetworkdetection.h \
         widget.h
 
 # Default rules for deployment.

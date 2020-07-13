@@ -26,8 +26,12 @@ Item {
             console.log("You chose: " + strpath)
 
             var str = BaiduFaceManager.start(strpath)
-            if(str !== ""){
+            if(str !== "" && str !== "-1"){
                  facePage.doJsonData(str,true)
+            }
+
+            if(str === "-1"){
+
             }
 
         }
@@ -110,6 +114,23 @@ Item {
         }
 
     }
+
+    Text {
+         id: textTip
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.bottom: parent.bottom
+         anchors.bottomMargin: parent.height/4
+         text: "网络异常，请检查网络状态!"
+         font.family: "Helvetica"
+         font.pointSize: 15
+         color: "red"
+         visible: true
+
+         NumberAnimation on opacity {
+
+
+         }
+     }
 
 
 //    Loader{

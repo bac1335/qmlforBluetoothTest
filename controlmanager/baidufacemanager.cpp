@@ -5,6 +5,7 @@
 #include "face.h"
 #include <QImage>
 #include <QFile>
+#include "llsnetworkdetection.h"
 
 BaiduFaceManager::BaiduFaceManager(QObject *parent):
     QObject(parent)
@@ -20,6 +21,10 @@ void BaiduFaceManager::startFace()
 QString BaiduFaceManager::start(QString imgpath)
 {
     qDebug() << "--->lls<---" << __FUNCTION__  << imgpath << m_bIsFaceTakenOk;
+
+    if(!LLSNDState->isConnected()){
+        return "-1";
+    }
 
     if(m_bIsFaceTakenOk){
         std::string app_id = m_id.toStdString();
