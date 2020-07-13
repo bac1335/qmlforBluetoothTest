@@ -24,17 +24,7 @@ Item {
         onAccepted: {
             var strpath = fileDialog.fileUrl.toString()
             console.log("You chose: " + strpath)
-
-            var str = BaiduFaceManager.start(strpath)
-
-            if(str == "-1"){
-                console.log("=========================network_error===========================");
-                textTip.setText("网络异常，请检查网络状态!");
-                textTip.start()
-            }
-            else if(str !== "" && str !== "-1"){
-                facePage.doJsonData(str,true)
-           }
+            mainroot.doImgChoice(strpath,true)
         }
         onRejected: {
             console.log("Canceled")
@@ -148,11 +138,30 @@ Item {
          }
      }
 
+    function doImgChoice(strpath,isAdd){
+        var str = BaiduFaceManager.start(strpath)
+        if(str == "-1"){
+            console.log("=========================network_error===========================");
+            textTip.setText("网络异常，请检查网络状态!");
+            textTip.start()
+        }
+        else if(str !== "" && str !== "-1"){
+            facePage.doJsonData(str,isAdd,strpath)
+       }
+    }
 
-//    Loader{
-//        id: preLoader
 
-//    }
+    Loader{
+        id: preLoader
+        anchors.fill: parent
+
+       function setFaceRect(x1,y1,width1,height1,rotation1,jsonDetail){
+           preLoader.item.setFaceRect(x1,y1,width1,height1,rotation1,jsonDetail)
+       }
+       function loadImg(imgPath){
+           preLoader.item.loadImg(imgPath)
+       }
+    }
 
     Component{
         id: preViewCom
@@ -168,7 +177,7 @@ Item {
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    preView.visible = false
+                    preLoader.sourceComponent = undefined
                 }
                }
              }
@@ -204,10 +213,11 @@ Item {
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    var str = BaiduFaceManager.start(imgshowDelete.imgPath)
-                    if(str !== ""){
-                         facePage.doJsonData(str,false)
-                    }
+                    mainroot.doImgChoice(imgshowDelete.imgPath,false)
+//                    var str = BaiduFaceManager.start(imgshowDelete.imgPath)
+//                    if(str !== ""){
+//                        facePage.doJsonData(str,false)
+//                    }
                 }
             }
             Component.onCompleted: {
@@ -301,12 +311,14 @@ Item {
         obj.setImage(path)
     }
 
-    function doJsonData(str,isAdd){
+    function doJsonData(str,isAdd,imgpath){
 
         var obj = JSON.parse(str)
         if(obj.error_code == 0){
-            var preView = preViewCom.createObject(mainroot)
-            preView.loadImg(fileDialog.fileUrl.toString())
+
+            preLoader.sourceComponent = preViewCom;
+            preLoader.loadImg(imgpath)
+
             var arrrayList = obj.result.face_list;
             for(var i = 0;i<arrrayList.length;i++){
                 var data = arrrayList[i]
@@ -315,14 +327,15 @@ Item {
                         var rect = data.location
                         var jsonDetail = {"age": data.age,"face_probability":data.face_probability}
 
-                        preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation,jsonDetail)
+                        preLoader.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation,jsonDetail)
+                        //preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation,jsonDetail)
 
                     }
                 }
             }
 
            if(isAdd){
-              doChoiceImg(fileDialog.fileUrl)
+              doChoiceImg(fileDialog.fileUrl,isAdd)
            }
 
         }
