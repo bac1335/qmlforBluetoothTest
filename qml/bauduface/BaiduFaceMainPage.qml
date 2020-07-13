@@ -27,7 +27,7 @@ Item {
 
             var str = BaiduFaceManager.start(strpath)
             if(str !== ""){
-                 facePage.doJsonData(str)
+                 facePage.doJsonData(str,true)
             }
 
         }
@@ -165,8 +165,12 @@ Item {
             property string imgPath: ""
 
             MouseArea{
+                anchors.fill: parent
                 onClicked: {
-
+                    var str = BaiduFaceManager.start(imgshowDelete.imgPath)
+                    if(str !== ""){
+                         facePage.doJsonData(str,false)
+                    }
                 }
             }
             Component.onCompleted: {
@@ -244,7 +248,7 @@ Item {
 
             function setDetail(data){
                 listModel2.addItem("age",data.age)
-                listModel2.addItem("face_probability",data.face_probability)
+//                listModel2.addItem("face_probability",data.face_probability)
             }
 
 
@@ -260,7 +264,7 @@ Item {
         obj.setImage(path)
     }
 
-    function doJsonData(str){
+    function doJsonData(str,isAdd){
         var obj = JSON.parse(str)
         if(obj.error_code == 0){
 
@@ -280,7 +284,10 @@ Item {
                 }
             }
 
-           doChoiceImg(fileDialog.fileUrl)
+           if(isAdd){
+              doChoiceImg(fileDialog.fileUrl)
+           }
+
         }
         else{
             console.log("==========================================112")
