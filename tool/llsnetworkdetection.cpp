@@ -9,6 +9,7 @@ LLSNetworkDetction* LLSNetworkDetction::inistance()
 {
     if(!m_pInstance){
         m_pInstance = new LLSNetworkDetction;
+        m_pInstance->start();
     }
 
     return m_pInstance;

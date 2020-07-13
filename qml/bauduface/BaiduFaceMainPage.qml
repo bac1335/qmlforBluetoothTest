@@ -26,14 +26,15 @@ Item {
             console.log("You chose: " + strpath)
 
             var str = BaiduFaceManager.start(strpath)
-            if(str !== "" && str !== "-1"){
-                 facePage.doJsonData(str,true)
+
+            if(str == "-1"){
+                console.log("=========================network_error===========================");
+                textTip.setText("网络异常，请检查网络状态!");
+                textTip.start()
             }
-
-            if(str === "-1"){
-
-            }
-
+            else if(str !== "" && str !== "-1"){
+                facePage.doJsonData(str,true)
+           }
         }
         onRejected: {
             console.log("Canceled")
@@ -120,15 +121,30 @@ Item {
          anchors.horizontalCenter: parent.horizontalCenter
          anchors.bottom: parent.bottom
          anchors.bottomMargin: parent.height/4
-         text: "网络异常，请检查网络状态!"
+         text: ""
          font.family: "Helvetica"
          font.pointSize: 15
          color: "red"
          visible: true
+         opacity: 0
 
-         NumberAnimation on opacity {
+         PropertyAnimation{
+             id: textTipAni
+             target: textTip
+             property: "opacity"
+             from: 1.0
+             to: 0
+             duration: 5000
+         }
 
 
+         function setText(text){
+             textTip.text = text;
+         }
+
+         function start(){
+             textTipAni.stop()
+             textTipAni.start()
          }
      }
 
@@ -286,9 +302,9 @@ Item {
     }
 
     function doJsonData(str,isAdd){
+
         var obj = JSON.parse(str)
         if(obj.error_code == 0){
-
             var preView = preViewCom.createObject(mainroot)
             preView.loadImg(fileDialog.fileUrl.toString())
             var arrrayList = obj.result.face_list;
@@ -311,7 +327,10 @@ Item {
 
         }
         else{
-            console.log("==========================================112")
+            console.log("=========================pic_error===========================");
+            textTip.setText("请导入正确人脸!");
+            textTip.start()
+            return;
             //不是人物图像
         }
 
