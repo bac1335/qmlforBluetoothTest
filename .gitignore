@@ -4,5 +4,5 @@ Makefile.Debug
 Makefile.Release
 debug/
 release/
-toolsoft.pro.user
+toolsoft.pro.user*
 

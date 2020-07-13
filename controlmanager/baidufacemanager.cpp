@@ -53,7 +53,7 @@ QString BaiduFaceManager::start(QString imgpath)
         // 如果有可选参数
         std::map<std::string, std::string> options;
         options["face_field"] = "age";
-        options["max_face_num"] = "1";
+        options["max_face_num"] = "10";
         options["face_type"] = "LIVE";
         options["liveness_control"] = "LOW";
 

@@ -132,7 +132,6 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     preView.visible = false
-    //                preView.clearElement()
                 }
                }
              }
@@ -267,21 +266,21 @@ Item {
 
             var preView = preViewCom.createObject(mainroot)
             preView.loadImg(fileDialog.fileUrl.toString())
-            var data = (obj.result.face_list)[0]
-            if(data.hasOwnProperty("face_probability")){
-                console.log("===============doJsonData================== " + data.face_probability)
+            var arrrayList = obj.result.face_list;
+            for(var i = 0;i<arrrayList.length;i++){
+                var data = arrrayList[i]
+                if(data.hasOwnProperty("face_probability")){
+                    if(data.hasOwnProperty("location")){
+                        var rect = data.location
+                        var jsonDetail = {"age": data.age,"face_probability":data.face_probability}
 
-                if(data.hasOwnProperty("location")){
-                    var rect = data.location
-                    var jsonDetail = {"age": data.age,"face_probability":data.face_probability}
+                        preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation,jsonDetail)
 
-                    preView.setFaceRect(rect.left,rect.top,rect.width,rect.height,rect.rotation,jsonDetail)
-
+                    }
                 }
             }
 
-            doChoiceImg(fileDialog.fileUrl)
-
+           doChoiceImg(fileDialog.fileUrl)
         }
         else{
             console.log("==========================================112")
