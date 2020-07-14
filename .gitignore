@@ -5,4 +5,5 @@ Makefile.Release
 debug/
 release/
 facedetection.pro.user*
+tem/
 

@@ -11,12 +11,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include($$PWD/baiduface/baiduface.pri)
 include($$PWD/ToolManager/ToolManager.pri)
 
-INCLUDEPATH += ToolManager baiduface controlmanager
+INCLUDEPATH += ToolManager baiduface controlmanager bluetooth tool
+CONFIG(release,release|debug){
+    DESTDIR += $$PWD/bin/
+}
+MOC_DIR += $$PWD/tem/
+OBJECTS_DIR += $$PWD/tem/
 
 TARGET = facedetection
 TEMPLATE = app
-
-INCLUDEPATH += bluetooth tool
 
 RC_FILE += logo.rc
 # The following define makes your compiler emit warnings if you use
