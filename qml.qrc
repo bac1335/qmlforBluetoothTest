@@ -13,5 +13,6 @@
         <file>skin/photo_error.png</file>
         <file>qml/camera/Camerapage.qml</file>
         <file>qml/camera/Cameratoolbar.qml</file>
+        <file>skin/toolbar/player.png</file>
     </qresource>
 </RCC>

@@ -4,5 +4,6 @@
         <file alias="skin/loading/loading.png">skin/loading/loading.png</file>
         <file alias="skin/button/turnLeft.png">skin/button/turnLeft.png</file>
         <file alias="skin/photo_error.png">skin/photo_error.png</file>
+        <file alias="skin/toolbar/player.png">skin/toolbar/player.png</file>
     </qresource>
 </RCC>

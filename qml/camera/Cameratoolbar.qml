@@ -1,22 +1,20 @@
 ﻿import QtQuick 2.0
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 Item {
     id: root
-    Rectangle{
-        anchors.fill: parent
-        color: "red"
-    }
-
+    signal sigBtnClick(int type)
     Item {
         id: locatorItem
-        width: box1.width + box2.width + box3.width + 15*2
+        width: box1.width + box2.width + box3.width + row.spacing * 2
         height: box1.height
         anchors.centerIn: parent
 
         Row{
            id: row
            anchors.fill: parent
-           spacing: 15
+           spacing: 50
 
            Loader{
                id: box1
@@ -26,6 +24,9 @@ Item {
            Loader{
                id: box2
                sourceComponent: boxItem
+               Component.onCompleted: {
+                   box2.item.setImageAndBtnType(":../../../../skin/toolbar/player.png",config.btnTypeCameraPlay);
+               }
            }
 
            Loader{
@@ -37,11 +38,29 @@ Item {
 
         Component{
             id: boxItem
-            Rectangle{
+            Item{
+               id: btn
+               property int  btnType: config.btnType
                width: 60
                height: 60
-               radius: 60
-               color: "yellow"
+
+               Image{
+                   id: img
+                   anchors.fill: parent
+                   source: ""
+               }
+
+               MouseArea{
+                   anchors.fill: parent
+                   onClicked: {
+                       sigBtnClick(config.btnTypeCameraPlay)
+                   }
+               }
+
+               function setImageAndBtnType(imgPath,type){
+                   img.source = imgPath
+                   btn.btnType = type
+               }
             }
         }
 

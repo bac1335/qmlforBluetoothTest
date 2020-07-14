@@ -7,4 +7,7 @@ release/
 facedetection.pro.user*
 tem/
 bin/facedetection.exe
+bin/Error*
+Setup/facedetection*
+
 

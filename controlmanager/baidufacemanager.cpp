@@ -41,10 +41,12 @@ QString BaiduFaceManager::start(QString imgpath)
 
         QFile file(imgpath);
         QByteArray array;
-        if(file.open(QFile::ReadOnly)){
-            array =file.readAll().toBase64();
-            file.close();
-        }
+
+
+        if(!file.open(QFile::ReadOnly)) return "";
+
+        array =file.readAll().toBase64();
+        file.close();
 
         if(array.isEmpty()) return "";
 
