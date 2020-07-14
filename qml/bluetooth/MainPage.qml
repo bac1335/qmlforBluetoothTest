@@ -28,6 +28,9 @@ Item {
             else if(btnType === config.btnTypeShowBaiduFace){
                switchPage(config.pageType_baiduFace)
             }
+            else if(btnType === config.btnTypeshowCamera){
+               switchPage(config.pageType_CameraFace)
+            }
         }
     }
 

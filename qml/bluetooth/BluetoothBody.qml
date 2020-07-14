@@ -35,5 +35,18 @@ Item {
                }
            }
        }
+
+       LLSBUtton{
+           id: showCamera
+           Component.onCompleted: {
+               showCamera.setBtnType("摄像头",config.btnTypeshowCamera)
+           }
+           Connections{
+               target: showCamera
+               onShowListClicked:{
+                   showListClicked(btnType)
+               }
+           }
+       }
    }
 }

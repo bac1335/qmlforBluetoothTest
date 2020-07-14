@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui bluetooth qml
-
+QT       += multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include($$PWD/baiduface/baiduface.pri)
@@ -38,6 +38,7 @@ CONFIG += c++11
 SOURCES += \
         controlmanager/baidufacemanager.cpp \
         controlmanager/boothmanager.cpp \
+        controlmanager/cameramanager.cpp \
         controlmanager/llscontrol.cpp \
         main.cpp \
         tool/llsetting.cpp \
@@ -47,6 +48,7 @@ SOURCES += \
 HEADERS += \
         controlmanager/baidufacemanager.h \
         controlmanager/boothmanager.h \
+        controlmanager/cameramanager.h \
         controlmanager/llscontrol.h \
         tool/llsetting.h \
         tool/llsnetworkdetection.h \

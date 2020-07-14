@@ -94,7 +94,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
         Component.onCompleted:{
-            faceshowBtn.setBtnType("添加",config.btnTypeshiwFace)
+            faceshowBtn.setBtnType("添加",config.btnTypeshowFace)
         }
 
         Connections{
@@ -214,10 +214,6 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     mainroot.doImgChoice(imgshowDelete.imgPath,false)
-//                    var str = BaiduFaceManager.start(imgshowDelete.imgPath)
-//                    if(str !== ""){
-//                        facePage.doJsonData(str,false)
-//                    }
                 }
             }
             Component.onCompleted: {

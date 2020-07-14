@@ -3,6 +3,7 @@
 #include "llscontrol.h"
 #include "boothmanager.h"
 #include "baidufacemanager.h"
+#include "cameramanager.h"
 
 LLSControlManager::LLSControlManager(QQmlApplicationEngine* engine,QObject *parent):
     QObject (parent),m_pEngine(engine)
@@ -19,4 +20,7 @@ void LLSControlManager::init()
 
     m_pBaiduFaceManage = new BaiduFaceManager(this);
     m_pEngine->rootContext()->setContextProperty("BaiduFaceManager",m_pBaiduFaceManage);
+
+    m_pCameraManager = new CameraManager(this);
+    m_pEngine->rootContext()->setContextProperty("CameraManager",m_pCameraManager);
 }

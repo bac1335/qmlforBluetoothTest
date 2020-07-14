@@ -11,5 +11,7 @@
         <file>qml/bluetooth/MainPage.qml</file>
         <file>skin/button/turnLeft.png</file>
         <file>skin/photo_error.png</file>
+        <file>qml/camera/Camerapage.qml</file>
+        <file>qml/camera/Cameratoolbar.qml</file>
     </qresource>
 </RCC>

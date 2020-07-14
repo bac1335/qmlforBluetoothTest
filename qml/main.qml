@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
 import "./bauduface"
 import "./bluetooth"
+import "./camera"
 
 Window{
     id: window
@@ -32,6 +33,9 @@ Window{
                         case config.pageType_baiduFace:
                             pageManager.replace(baiduFacePage)
                         break;
+                        case config.pageType_CameraFace:
+                            pageManager.replace(camerafacePage)
+                        break;
                     }
                 }
             }
@@ -48,19 +52,13 @@ Window{
                     pageManager.replace(mainRootPage)
                 }
             }
+        }
+    }
 
-//            Connections{
-//                target: facePage
-//                onSigImgPreview:{
-////                    preView.visible = true
-////                    preView.loadImg(strpath)
-////                    var str = BaiduFaceManager.start(strpath)
-////                    if(str !== ""){
-////                         facePage.doJsonData(str)
-////                    }
-                    
-//                }
-//            }
+    Component{
+        id: camerafacePage
+        Camerapage{
+            id: camerapage
         }
     }
 
@@ -80,6 +78,11 @@ Window{
              sourceComponent: baiduFacePage
          }
 
+         Loader{
+             id: camarefaceLoad
+             sourceComponent: camerafacePage
+         }
+
 
          function replace(page){
 
@@ -89,37 +92,11 @@ Window{
              else if(page == baiduFacePage){
                  pageManager.currentIndex = 1
              }
+             else if(page == camerafacePage){
+                 pageManager.currentIndex = 2
+             }
          }
      }
-
-//     Rectangle {
-//         id: preView
-//         anchors.fill: parent
-//         visible: false
-//         color: "#424242"
-////         opacity: 0.6
-
-//         Image {
-//             id: priImg
-//             anchors.centerIn: parent
-////             anchors.fill: parent
-////             source: "file"
-//         }
-
-//         MouseArea{
-//             anchors.fill: parent
-//             onClicked: {
-//                preView.visible = false
-//             }
-//         }
-
-//         function loadImg(imgPath){
-//             priImg.source = imgPath
-//         }
-//     }
-
-
-
 
 /*  动态页面切换方式每次切换会重新生成相应的页面
     StackView{

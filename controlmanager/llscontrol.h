@@ -5,7 +5,7 @@
 class QQmlApplicationEngine;
 class BoothManage;
 class BaiduFaceManager;
-
+class CameraManager;
 class LLSControlManager : public QObject{
     Q_OBJECT
 public:
@@ -18,6 +18,7 @@ private:
     QQmlApplicationEngine*          m_pEngine = nullptr;
     BoothManage*                    m_pBoothManager = nullptr;
     BaiduFaceManager*               m_pBaiduFaceManage = nullptr;
+    CameraManager*                  m_pCameraManager = nullptr;
 };
 
 #endif // LLSCONTROL_H
