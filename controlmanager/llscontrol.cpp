@@ -12,6 +12,12 @@ LLSControlManager::LLSControlManager(QQmlApplicationEngine* engine,QObject *pare
     init();
 }
 
+LLSControlManager::~LLSControlManager()
+{
+    qDebug() << "--->lls<---" << __FUNCTION__;
+    m_pEngine->removeImageProvider("CodeImage");
+}
+
 void LLSControlManager::init()
 {
 
@@ -26,6 +32,10 @@ void LLSControlManager::init()
 
     //需要再QQmlApplicationEngine导入界面之前注册类型
     registerqmlType();
+
+    connect(m_pEngine,&QQmlApplicationEngine::exit,this,[=](int code){
+        qDebug() << "--->lls<---" << __FUNCTION__  << code;
+    });
 }
 
 void LLSControlManager::registerqmlType()
@@ -38,6 +48,7 @@ void LLSControlManager::registerqmlType()
 void LLSControlManager::registerqmlConnect()
 {
     CameraManager* m_pCameraManager = new CameraManager(this);
+    m_pCameraManager->setBaiduCheack(m_pBaiduFaceManage);
     m_pEngine->rootContext()->setContextProperty("CameraManager",m_pCameraManager);
     m_pEngine->addImageProvider("CodeImage",m_pCameraManager->getImgProvider());
 }

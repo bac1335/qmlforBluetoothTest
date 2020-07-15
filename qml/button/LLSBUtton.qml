@@ -8,6 +8,8 @@ Button{
     width: 100
     height: 60
     property int  btnType: config.btnType
+    property bool btnState: false
+
     signal showListClicked(int btnType)
     style: ButtonStyle{
         background: Rectangle{

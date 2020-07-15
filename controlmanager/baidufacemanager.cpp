@@ -6,6 +6,8 @@
 #include <QImage>
 #include <QFile>
 #include "llsnetworkdetection.h"
+#include <QBuffer>
+#include <QElapsedTimer>
 
 BaiduFaceManager::BaiduFaceManager(QObject *parent):
     QObject(parent)
@@ -27,6 +29,8 @@ QString BaiduFaceManager::start(QString imgpath)
     }
 
     if(m_bIsFaceTakenOk){
+        QElapsedTimer eptimer;
+        eptimer.start();
         std::string app_id = m_id.toStdString();
         std::string api_key = m_appKey.toStdString();
         std::string secret_key = m_secretKey.toStdString();
@@ -63,11 +67,50 @@ QString BaiduFaceManager::start(QString imgpath)
         options["max_face_num"] = "10";
         options["face_type"] = "LIVE";
         options["liveness_control"] = "LOW";
-
+        qDebug() << "--->lls<---112" << __FUNCTION__  << eptimer.elapsed();
 
         result = client.detect(image, image_type, options);
 
-        qDebug() << "===========================" << result.toStyledString().c_str();
+        qDebug() << "--->lls<---110" << __FUNCTION__  << eptimer.elapsed();
+        return result.toStyledString().c_str();
+    }
+    else{
+        return "";
+    }
+}
+
+QString BaiduFaceManager::startFromStr(const QImage* img)
+{
+
+    if(!LLSNDState->isConnected()){
+        return "-1";
+    }
+
+    if(m_bIsFaceTakenOk){
+        QElapsedTimer eptimer;
+        eptimer.start();
+        std::string app_id = m_id.toStdString();
+        std::string api_key = m_appKey.toStdString();
+        std::string secret_key = m_secretKey.toStdString();
+        aip::Face client(app_id, api_key, secret_key);
+        Json::Value result;
+        std::string image_type ="BASE64";
+        qDebug() << "--->lls<---112" << __FUNCTION__  << eptimer.elapsed();
+
+        std::map<std::string, std::string> options;
+        options["face_field"] = "age";
+        options["max_face_num"] = "10";
+        options["face_type"] = "LIVE";
+        options["liveness_control"] = "LOW";
+
+        QByteArray arrayImg;
+        QBuffer buffer(&arrayImg);
+        buffer.open(QBuffer::ReadWrite);
+        img->save(&buffer,"PNG",100);
+        buffer.close();
+        qDebug() << "--->lls<---110" << __FUNCTION__  << eptimer.elapsed();
+        result = client.detect(arrayImg.toBase64().toStdString(), image_type, options);
+        qDebug() << "--->lls<---111" << __FUNCTION__  << eptimer.elapsed();
         return result.toStyledString().c_str();
     }
     else{

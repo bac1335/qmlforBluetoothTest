@@ -8,6 +8,7 @@ public:
     explicit BaiduFaceManager(QObject* parent = nullptr);
     void startFace();
     Q_INVOKABLE QString start(QString imgpath);
+    Q_INVOKABLE QString startFromStr(const QImage* img);
 
 private:
     void init();

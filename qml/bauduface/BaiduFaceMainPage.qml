@@ -129,7 +129,18 @@ Item {
             Connections{
                 target: faceshowBtn
                 onShowListClicked:{
-                     fileDialog.open()
+                     if(btnType == config.btnTypeshowFace){
+                         fileDialog.open()
+                     }
+                     else if(btnType == config.btnTypeDynamicshowFace){
+                         if(faceshowBtn.btnState){
+                              CameraManager.stopCamera()
+                         }
+                         else{
+                              CameraManager.openCamera()
+                         }
+                         faceshowBtn.btnState = !faceshowBtn.btnState
+                     }
                 }
             }
 

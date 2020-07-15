@@ -1,16 +1,20 @@
 ﻿#include "cameramanager.h"
+#include "baidufacemanager.h"
 
-#include <highgui.h>    //opencv
-#include <cv.h>         //opencv
-
+#include "highgui.h"    //opencv
 #include <QCamera>
 #include <QTimerEvent>
 
-//using namespace cv;
 CameraManager::CameraManager(QObject *parent):
     QObject (parent)
 {
     init();
+}
+
+CameraManager::~CameraManager()
+{
+    qDebug() << "--->lls<---" << __FUNCTION__ ;
+    stopCamera();
 }
 
 void CameraManager::cameraInfoUpdate()
@@ -55,6 +59,8 @@ bool CameraManager::openCamera()
 
 bool CameraManager::stopCamera()
 {
+   qDebug() << "--->lls<---" << __FUNCTION__  << m_iTimeFlag;
+    m_timerFlag = 0;
     if(m_pCam){
         cvReleaseCapture(&m_pCam);
         m_pCam = nullptr;
@@ -79,7 +85,7 @@ void CameraManager::init()
 {
     cameraInfoUpdate();
 
-    m_pImageProvider = QSharedPointer<ImageProvider>(new ImageProvider());
+    m_pImageProvider = new ImageProvider();
 }
 
 void CameraManager::doTimeOut()
@@ -89,6 +95,16 @@ void CameraManager::doTimeOut()
         QSharedPointer<QImage> img = QSharedPointer<QImage>(new QImage((unsigned char*)Frame->imageData,Frame->width,Frame->height,Frame->widthStep,QImage::Format_RGB888));
 
         m_pImageProvider->setImg(img.data());
+#if 0
+        m_timerFlag++;
+
+        if(m_timerFlag>=130&&test){
+            test = false;
+//            m_timerFlag = 0;
+            QString da = m_baiduCheack->startFromStr(img.data());
+            qDebug() << "======================" << da;
+        }
+#endif
         emit sigSendImgUpdate();
     }
 }

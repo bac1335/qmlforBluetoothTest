@@ -6,6 +6,7 @@
 
 QT       += core gui bluetooth qml  quick multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+CONFIG += console
 
 include($$PWD/baiduface/baiduface.pri)
 include($$PWD/ToolManager/ToolManager.pri)

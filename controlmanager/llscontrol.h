@@ -10,6 +10,7 @@ class LLSControlManager : public QObject{
     Q_OBJECT
 public:
     explicit LLSControlManager(QQmlApplicationEngine* engine,QObject* parent = nullptr);
+    ~LLSControlManager();
 
 private:
     void init();

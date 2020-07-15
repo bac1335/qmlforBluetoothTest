@@ -2,10 +2,7 @@ INCLUDEPATH += $$PWD  $$PWD/opencv/ $$PWD/opencv2/
 
 win32 {
     CONFIG(release, debug|release) {
-        LIBS += -L$$PWD/lib/release -lopencv_core2411
-        LIBS += -L$$PWD/lib/release -lopencv_highgui2411
-        LIBS += -L$$PWD/lib/release -lopencv_imgproc2411
-        LIBS += -L$$PWD/lib/release -lopencv_video2411
+        LIBS += -L$$PWD/lib/ -lopencv_core2411 -lopencv_highgui2411 -lopencv_imgproc2411 -lopencv_video2411
     }
 }
 

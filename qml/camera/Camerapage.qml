@@ -40,10 +40,6 @@ Item{
 
                         onImageCaptured: {
                             photoPreview.source = preview  // Show the preview in an Image
-//                            var str = BaiduFaceManager.start(preview)
-//                            if(str !== "" && str !== "-1"){
-////                                facePage.doJsonData(str,isAdd,strpath)
-//                           }
                         }
 
                     }
