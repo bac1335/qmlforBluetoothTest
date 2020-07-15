@@ -16,7 +16,7 @@ private:
     void init();
 
 private:
-    QQmlApplicationEngine*      m_pEngle = nullptr;
+    QQmlApplicationEngine*      m_pEngine = nullptr;
     LLSControlManager*          m_pLLsManager = nullptr;
 };
 

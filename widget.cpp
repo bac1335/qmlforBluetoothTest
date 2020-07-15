@@ -3,6 +3,7 @@
 #include <QQmlApplicationEngine>
 #include "llscontrol.h"
 #include "llsnetworkdetection.h"
+#include "cameramanager.h"
 
 Widget::Widget(QObject *parent)
     : QObject(parent)
@@ -21,8 +22,6 @@ void Widget::init()
     if(LLSNDState){
         qInfo("=====================start_network_cheack===========================");
     }
-
-    m_pEngle = new QQmlApplicationEngine(this);
-    m_pEngle->load(QUrl("qrc:/qml/main.qml"));
-    m_pLLsManager = new LLSControlManager(m_pEngle,this);
+    m_pLLsManager = new LLSControlManager(m_pEngine,this);
 }
+

@@ -13,6 +13,10 @@ public:
 
 private:
     void init();
+    //需要再QQmlApplicationEngine导入界面之前注册类型
+    void registerqmlType();
+     //需要再QQmlApplicationEngine导入界面之前注册信号槽
+    void registerqmlConnect();
 
 private:
     QQmlApplicationEngine*          m_pEngine = nullptr;

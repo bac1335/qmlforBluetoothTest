@@ -4,6 +4,7 @@ import QtQuick.Controls 2.5
 import "./bauduface"
 import "./bluetooth"
 import "./camera"
+//import CameraManager 1.0
 
 Window{
     id: window

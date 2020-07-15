@@ -11,6 +11,7 @@ QtObject{
     property int  btnTypeshowCamera: btnType + 3
     property int  btnTypeshowFace: btnType + 4
     property int  btnTypeCameraPlay: btnType + 5
+    property int  btnTypeDynamicshowFace: btnType + 6
 
 
     property int  pageType: 1000

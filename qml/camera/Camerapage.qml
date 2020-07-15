@@ -47,7 +47,7 @@ Item{
                         }
 
                     }
-                    }
+                }
 
 
                 MouseArea{
@@ -73,6 +73,7 @@ Item{
                 function stop(){
                     camera.stop()
                 }
+
             }
         }
     }

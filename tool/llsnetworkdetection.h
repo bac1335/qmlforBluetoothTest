@@ -16,6 +16,8 @@ public:
         Net_connection,
         Net_closed,
     };
+    explicit LLSNetworkDetction(QThread* parent = nullptr);
+    ~LLSNetworkDetction();
     static LLSNetworkDetction* inistance();
     /**
     * @brief 获取外网连接状态，无需阻塞

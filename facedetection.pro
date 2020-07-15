@@ -4,14 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       += core gui bluetooth qml
-QT       += multimedia
+QT       += core gui bluetooth qml  quick multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 include($$PWD/baiduface/baiduface.pri)
 include($$PWD/ToolManager/ToolManager.pri)
 
 INCLUDEPATH += ToolManager baiduface controlmanager bluetooth tool
+
 CONFIG(release,release|debug){
     DESTDIR += $$PWD/bin/
 }

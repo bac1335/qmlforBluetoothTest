@@ -5,6 +5,19 @@
 
 LLSNetworkDetction* LLSNetworkDetction::m_pInstance = nullptr;
 
+LLSNetworkDetction::LLSNetworkDetction(QThread *parent):
+    QThread (parent)
+{
+
+}
+
+LLSNetworkDetction::~LLSNetworkDetction()
+{
+    m_bRunState = false;
+    this->wait();
+    this->quit();
+}
+
 LLSNetworkDetction* LLSNetworkDetction::inistance()
 {
     if(!m_pInstance){

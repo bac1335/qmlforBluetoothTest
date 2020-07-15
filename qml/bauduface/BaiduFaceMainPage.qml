@@ -5,6 +5,11 @@ import ".././button"
 Item {
     id: mainroot
 
+    Image{
+       id: pre
+       anchors.fill: parent
+    }
+
     property int  pageType: config.pageType_baiduFace
     signal sigReturnClicked()
 
@@ -87,23 +92,52 @@ Item {
         }
     }
 
-    LLSBUtton{
-        id: faceshowBtn
-        opacity: 0.8
+    Item{
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 20
-        Component.onCompleted:{
-            faceshowBtn.setBtnType("添加",config.btnTypeshowFace)
-        }
+        width: 250
+        height: 60
+        Row{
+            spacing: 50
+            anchors.fill: parent
+            anchors.centerIn: parent
+            Loader{
+                id: addbtnLoad
+                sourceComponent: btnCom
+                Component.onCompleted: {
+                    addbtnLoad.item.setBtn("添加",config.btnTypeshowFace)
+                }
+            }
 
-        Connections{
-            target: faceshowBtn
-            onShowListClicked:{
-                 fileDialog.open()
+            Loader{
+                id: dynamicdetectionLoad
+                sourceComponent: btnCom
+                Component.onCompleted: {
+                    dynamicdetectionLoad.item.setBtn("动态检测",config.btnTypeDynamicshowFace)
+                }
             }
         }
+    }
 
+    Component{
+        id: btnCom
+        LLSBUtton{
+            id: faceshowBtn
+            opacity: 0.8
+
+            Connections{
+                target: faceshowBtn
+                onShowListClicked:{
+                     fileDialog.open()
+                }
+            }
+
+            function setBtn(name,type){
+                faceshowBtn.setBtnType(name,type)
+            }
+
+        }
     }
 
     Text {
@@ -295,6 +329,13 @@ Item {
             }
 
 
+        }
+    }
+
+    Connections{
+        target: CameraManager
+        onSigSendImgUpdate:{
+            pre.source = "image://CodeImage/yellow"+ Math.random()
         }
     }
 
