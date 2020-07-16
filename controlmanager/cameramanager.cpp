@@ -27,6 +27,7 @@ CameraManager::~CameraManager()
     }
 
     if(this->isRunning()){
+        m_useCheacked = false;
         this->wait();
         this->quit();
     }
