@@ -25,6 +25,11 @@ CameraManager::~CameraManager()
         delete m_pFramcap;
         m_pFramcap = nullptr;
     }
+
+    if(this->isRunning()){
+        this->wait();
+        this->quit();
+    }
 }
 
 void CameraManager::cameraInfoUpdate()
