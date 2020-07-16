@@ -2,7 +2,9 @@ INCLUDEPATH += $$PWD  $$PWD/opencv/ $$PWD/opencv2/
 
 win32 {
     CONFIG(release, debug|release) {
-        LIBS += -L$$PWD/lib/ -lopencv_core3410 -lopencv_highgui3410 -lopencv_imgproc3410 -lopencv_videoio3410
+        LIBS += -L$$PWD/lib/ -lopencv_core3410 -lopencv_objdetect3410 -lopencv_videostab3410 -lopencv_videoio3410 -lopencv_ts3410 \
+        -lopencv_superres3410 -lopencv_stitching3410 -lopencv_shape3410 -lopencv_photo3410 -lopencv_ml3410 -lopencv_calib3d3410 \
+        -lopencv_dnn3410 -lopencv_features2d3410 -lopencv_flann3410 -lopencv_highgui3410 -lopencv_imgcodecs3410 -lopencv_imgproc3410
     }
 }
 

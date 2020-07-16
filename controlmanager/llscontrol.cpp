@@ -47,7 +47,7 @@ void LLSControlManager::registerqmlType()
 
 void LLSControlManager::registerqmlConnect()
 {
-    CameraManager* m_pCameraManager = new CameraManager(this);
+    CameraManager* m_pCameraManager = new CameraManager;
     m_pCameraManager->setBaiduCheack(m_pBaiduFaceManage);
     m_pEngine->rootContext()->setContextProperty("CameraManager",m_pCameraManager);
     m_pEngine->addImageProvider("CodeImage",m_pCameraManager->getImgProvider());

@@ -1,12 +1,17 @@
 ﻿#include "cameramanager.h"
 #include "baidufacemanager.h"
-
-#include "highgui.h"    //opencv
+#include <QApplication>
 #include <QCamera>
 #include <QTimerEvent>
+#include <Windows.h>
 
-CameraManager::CameraManager(QObject *parent):
-    QObject (parent)
+#define OldOpencv 0
+
+using namespace std;
+using namespace cv;
+
+CameraManager::CameraManager(QThread *parent):
+   QThread(parent)
 {
     init();
 }
@@ -15,6 +20,11 @@ CameraManager::~CameraManager()
 {
     qDebug() << "--->lls<---" << __FUNCTION__ ;
     stopCamera();
+
+    if(m_pFramcap){
+        delete m_pFramcap;
+        m_pFramcap = nullptr;
+    }
 }
 
 void CameraManager::cameraInfoUpdate()
@@ -46,6 +56,7 @@ bool CameraManager::openCamera()
 
 //    if(m_deviceList.count() <= 0) return false;
 
+#if OldOpencv
     m_pCam = cvCreateCameraCapture(0);
 
     if(m_pCam){
@@ -54,12 +65,50 @@ bool CameraManager::openCamera()
             return true;
         }
     }
+#else
+    if(m_useCheacked){
+        QString facePath = QApplication::applicationDirPath() + "/haarcascade_frontalface_alt2.xml";
+        QString areaPath = QApplication::applicationDirPath() + "/haarcascade_eye_tree_eyeglasses.xml";
+
+        if(!m_pFaceCascade.load(facePath.toStdString())){
+            qDebug()<<"--->lls<---load face fail" << __FUNCTION__;
+            return false;
+        }
+
+        if(!m_pAreCascade.load(areaPath.toStdString())){
+            qDebug()<<"--->lls<---loadArea fail" << __FUNCTION__;
+            return false;
+        }
+    }
+
+    //打开camera
+    if(m_pFramcap->open(0)){
+        qDebug()<<"--->lls<---" << __FUNCTION__<< "open camera";
+        m_cameraState = true;
+        start();
+    }
+#endif
     return false;
+}
+
+bool CameraManager::openVideo(QString path)
+{
+
+    if(m_cameraState) return false;
+    //打开视频
+    if(m_pFramcap->open(path.toStdString())){
+        m_cameraState = true;
+        start();
+    }
+
+    return m_cameraState;
 }
 
 bool CameraManager::stopCamera()
 {
    qDebug() << "--->lls<---" << __FUNCTION__  << m_iTimeFlag;
+
+#if OldOpencv
     m_timerFlag = 0;
     if(m_pCam){
         cvReleaseCapture(&m_pCam);
@@ -71,6 +120,12 @@ bool CameraManager::stopCamera()
         m_iTimeFlag = -1;
         return true;
     }
+#else
+    m_pFramcap->release();
+    m_cameraState = false;
+//    this->wait();
+//    this->quit();
+#endif
     return false;
 }
 
@@ -81,30 +136,146 @@ void CameraManager::timerEvent(QTimerEvent *event)
     }
 }
 
+void CameraManager::run()
+{
+    while(m_cameraState)
+    {
+        cv::Mat frame;
+        bool ok = m_pFramcap->read(frame);
+        if (! ok)             // also, mandatory CHECK !
+            break;
+
+        if(m_useCheacked){
+            cv::Mat frame2;
+            cvtColor(frame, frame2, CV_BGR2GRAY);
+            DetectFace(frame,frame2);
+        }
+
+#if 1
+        QImage img = cvMat2QImage(frame);
+        m_pImageProvider->setImg(&img);
+        emit sigSendImgUpdate();
+#else
+        imshow("src", frame);
+#endif
+
+        cv::waitKey(m_videoFps);
+    }
+}
+
+QImage CameraManager::cvMat2QImage(const cv::Mat& mat)
+{
+    // 8-bits unsigned, NO. OF CHANNELS = 1
+    if(mat.type() == CV_8UC1)
+    {
+        QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
+        // Set the color table (used to translate colour indexes to qRgb values)
+        image.setColorCount(256);
+        for(int i = 0; i < 256; i++)
+        {
+            image.setColor(i, qRgb(i, i, i));
+        }
+        // Copy input Mat
+        uchar *pSrc = mat.data;
+        for(int row = 0; row < mat.rows; row ++)
+        {
+            uchar *pDest = image.scanLine(row);
+            memcpy(pDest, pSrc, mat.cols);
+            pSrc += mat.step;
+        }
+        return image;
+    }
+    // 8-bits unsigned, NO. OF CHANNELS = 3
+    else if(mat.type() == CV_8UC3)
+    {
+        // Copy input Mat
+        const uchar *pSrc = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
+        return image.rgbSwapped();
+    }
+    else if(mat.type() == CV_8UC4)
+    {
+        qDebug() << "CV_8UC4";
+        // Copy input Mat
+        const uchar *pSrc = (const uchar*)mat.data;
+        // Create QImage with same dimensions as input Mat
+        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_ARGB32);
+        return image.copy();
+    }
+    else
+    {
+        qDebug() << "ERROR: Mat could not be converted to QImage.";
+        return QImage();
+    }
+}
+cv::Mat CameraManager::QImage2cvMat(QImage image)
+{
+    cv::Mat mat;
+    qDebug() << image.format();
+    switch(image.format())
+    {
+    case QImage::Format_ARGB32:
+    case QImage::Format_RGB32:
+    case QImage::Format_ARGB32_Premultiplied:
+        mat = cv::Mat(image.height(), image.width(), CV_8UC4, (void*)image.constBits(), image.bytesPerLine());
+        break;
+    case QImage::Format_RGB888:
+        mat = cv::Mat(image.height(), image.width(), CV_8UC3, (void*)image.constBits(), image.bytesPerLine());
+        cv::cvtColor(mat, mat, CV_BGR2RGB);
+        break;
+    case QImage::Format_Indexed8:
+        mat = cv::Mat(image.height(), image.width(), CV_8UC1, (void*)image.constBits(), image.bytesPerLine());
+        break;
+    }
+    return mat;
+}
+
+
 void CameraManager::init()
 {
     cameraInfoUpdate();
 
     m_pImageProvider = new ImageProvider();
+
+    m_pFramcap = new cv::VideoCapture;
+}
+
+void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray) {
+//    namedWindow("src", cv::WINDOW_AUTOSIZE);
+    vector<cv::Rect> faces, eyes;
+    m_pFaceCascade.detectMultiScale(imgGray, faces, 1.2, 5, 0, cv::Size(30, 30));
+#if 0
+    for (auto b : faces) {
+        cout << "输出一张人脸位置：(x,y):" << "(" << b.x << "," << b.y << ") , (width,height):(" << b.width << "," << b.height << ")" << endl;
+    }
+ #endif
+    if (faces.size()>0) {
+        for (size_t i = 0; i<faces.size(); i++) {
+            putText(img, "ugly man!", cvPoint(faces[i].x, faces[i].y - 10), cv::FONT_HERSHEY_PLAIN, 2.0, cv::Scalar(0, 0, 255));
+
+            rectangle(img, cv::Point(faces[i].x, faces[i].y), cv::Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height), cv::Scalar(0, 0, 255), 1, 8);
+#if 0
+            cout << faces[i] << endl;
+#endif
+            //将人脸从灰度图中抠出来
+            cv::Mat face_ = imgGray(faces[i]);
+            m_pAreCascade.detectMultiScale(face_, eyes, 1.2, 2, 0, cv::Size(30, 30));
+            for (size_t j = 0; j < eyes.size(); j++) {
+               cv:: Point eye_center(faces[i].x + eyes[j].x + eyes[j].width / 2, faces[i].y + eyes[j].y + eyes[j].height / 2);
+                int radius = cvRound((eyes[j].width + eyes[j].height)*0.25);
+                cv::circle(img, eye_center, radius, cv::Scalar(65, 105, 255), 4, 8, 0);
+            }
+        }
+    }
 }
 
 void CameraManager::doTimeOut()
 {
     IplImage* Frame = cvQueryFrame(m_pCam);
     if(Frame){
-        QSharedPointer<QImage> img = QSharedPointer<QImage>(new QImage((unsigned char*)Frame->imageData,Frame->width,Frame->height,Frame->widthStep,QImage::Format_RGB888));
-
+        QSharedPointer<QImage> img = QSharedPointer<QImage>(new QImage((unsigned char*)Frame->imageData,Frame->width,Frame->height,Frame->widthStep,QImage::Format_RGB888));      
         m_pImageProvider->setImg(img.data());
-#if 0
-        m_timerFlag++;
-
-        if(m_timerFlag>=130&&test){
-            test = false;
-//            m_timerFlag = 0;
-            QString da = m_baiduCheack->startFromStr(img.data());
-            qDebug() << "======================" << da;
-        }
-#endif
         emit sigSendImgUpdate();
     }
 }

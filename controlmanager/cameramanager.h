@@ -6,15 +6,19 @@
     * @brief         获取摄像头帧数进行处理每一帧数据
     */
 
-#include <QObject>
+#include <QThread>
 #include <QCameraInfo>
 #include <QtQuick/QQuickImageProvider>
+#include "opencv2/opencv.hpp"
+#include "opencv2/videoio.hpp"
 
 class QCamera;
 class CvCapture;
 class ImageProvider;
 class BaiduFaceManager;
-class CameraManager : public QObject{
+class VideoCapture;
+
+class CameraManager : public QThread{
     Q_OBJECT
 public:
     struct CameraType{
@@ -22,7 +26,7 @@ public:
         QString description;
         QCamera::Position position;
     };
-    explicit CameraManager(QObject* parent = nullptr);
+    explicit CameraManager(QThread* parent = nullptr);
     ~CameraManager();
     void  cameraInfoUpdate();
     ImageProvider* getImgProvider(){return m_pImageProvider;}
@@ -30,14 +34,19 @@ public:
 
     Q_INVOKABLE QVariantList cameraDeviceList(int type);
     Q_INVOKABLE bool openCamera();
+    Q_INVOKABLE bool openVideo(QString path);
     Q_INVOKABLE bool stopCamera();
 
 protected:
     void timerEvent(QTimerEvent *event);
+    void run();
 
 private:
     void init();
     inline void doTimeOut();
+    void DetectFace(cv::Mat& img,cv::Mat& imgGray);
+    inline QImage cvMat2QImage(const cv::Mat& mat);
+    inline cv::Mat QImage2cvMat(QImage image);
 
 signals:
     void sigSendImgUpdate();
@@ -52,6 +61,12 @@ private:
     ImageProvider*      m_pImageProvider = nullptr;
     int                 m_timerFlag = 1;
     bool                test = true;
+    bool                m_cameraState = false;
+    cv::VideoCapture*   m_pFramcap = nullptr;
+    int                 m_videoFps = 30;   //fps
+    cv::CascadeClassifier m_pFaceCascade;
+    cv::CascadeClassifier m_pAreCascade;
+    bool                m_useCheacked = true;
 };
 
 
