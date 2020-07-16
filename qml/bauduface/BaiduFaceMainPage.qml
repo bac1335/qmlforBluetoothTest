@@ -7,7 +7,9 @@ Item {
 
     Image{
        id: pre
+       property bool playState: false
        anchors.fill: parent
+
     }
 
     property int  pageType: config.pageType_baiduFace
@@ -183,6 +185,7 @@ Item {
          }
      }
 
+
     function doImgChoice(strpath,isAdd){
         var str = BaiduFaceManager.start(strpath)
         if(str == "-1"){
@@ -346,8 +349,9 @@ Item {
     Connections{
         target: CameraManager
         onSigSendImgUpdate:{
-            pre.source = "image://CodeImage/yellow"+ Math.random()
+             pre.source = "image://CodeImage/yellow"+ Math.random()
         }
+
     }
 
     function doChoiceImg(img){

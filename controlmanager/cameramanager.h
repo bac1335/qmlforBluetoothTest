@@ -50,6 +50,7 @@ private:
 
 signals:
     void sigSendImgUpdate();
+    void sigUpdate();
 
 private:
     QCamera*            m_camara = nullptr;

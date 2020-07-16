@@ -127,10 +127,12 @@ bool CameraManager::stopCamera()
         return true;
     }
 #else
-    m_pFramcap->release();
-    m_cameraState = false;
-//    this->wait();
-//    this->quit();
+   m_cameraState = false;  //这一瞬间可能子线程访问的是true，导致异常
+   this->wait();
+   this->quit();
+   m_pFramcap->release();
+
+
 #endif
     return false;
 }
@@ -160,7 +162,7 @@ void CameraManager::run()
 #if 1
         QImage img = cvMat2QImage(frame);
         m_pImageProvider->setImg(&img);
-        emit sigSendImgUpdate();
+        emit sigUpdate();
 #else
         imshow("src", frame);
 #endif
@@ -241,10 +243,16 @@ cv::Mat CameraManager::QImage2cvMat(QImage image)
 void CameraManager::init()
 {
     cameraInfoUpdate();
-
     m_pImageProvider = new ImageProvider();
-
     m_pFramcap = new cv::VideoCapture;
+
+    connect(this,&CameraManager::sigUpdate,this,[=](){
+        if(m_cameraState){
+           //这样处理是因为m_cameraState在主线程改变的时候,若m_cameraState在子线程访问发送sigSendImgUpdate()会崩溃
+           //sigSendImgUpdate()刷新主线程最好放在主线程处理
+           emit sigSendImgUpdate();
+        }
+    });
 }
 
 void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray) {
@@ -258,7 +266,7 @@ void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray) {
  #endif
     if (faces.size()>0) {
         for (size_t i = 0; i<faces.size(); i++) {
-            putText(img, "ugly man!", cvPoint(faces[i].x, faces[i].y - 10), cv::FONT_HERSHEY_PLAIN, 2.0, cv::Scalar(0, 0, 255));
+            putText(img, "made by LLS", cvPoint(faces[i].x, faces[i].y - 10), cv::FONT_HERSHEY_PLAIN, 2.0, cv::Scalar(0, 0, 255));
 
             rectangle(img, cv::Point(faces[i].x, faces[i].y), cv::Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height), cv::Scalar(0, 0, 255), 1, 8);
 #if 0
