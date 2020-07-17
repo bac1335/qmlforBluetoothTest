@@ -349,7 +349,7 @@ Item {
     Connections{
         target: CameraManager
         onSigSendImgUpdate:{
-             pre.source = "image://CodeImage/yellow"+ Math.random()
+                pre.source = "image://CodeImage/yellow"+ Math.random()
         }
 
     }

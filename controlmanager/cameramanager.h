@@ -64,7 +64,7 @@ private:
     bool                test = true;
     bool                m_cameraState = false;
     cv::VideoCapture*   m_pFramcap = nullptr;
-    int                 m_videoFps = 30;   //fps
+    int                 m_videoFps = 100;   //fps   //调的越低在移动窗口奔溃的概率越大，目前测试100正合适
     cv::CascadeClassifier m_pFaceCascade;
     cv::CascadeClassifier m_pAreCascade;
     bool                m_useCheacked = true;

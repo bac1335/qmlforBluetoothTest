@@ -12,6 +12,7 @@ Window{
     height: config.windowsHeight
     color: config.bgColor
     visible: true
+
     signal getDevice(string str);
 
     QtConfig{
