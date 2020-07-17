@@ -41,7 +41,7 @@ CameraManager::~CameraManager()
 
 void CameraManager::cameraInfoUpdate()
 {
-#if 0
+#if 1
     QList<QCameraInfo> infoList = QCameraInfo::availableCameras();
     foreach(QCameraInfo info,infoList){
         CameraType type;
@@ -53,7 +53,7 @@ void CameraManager::cameraInfoUpdate()
 #else
     qDebug()<<"--->lls<---" << __FUNCTION__<< "==============start_camera_info===============";
     QProcess process;
-       QString fileName = QString("%1/device.txt").arg((QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)));
+       QString fileName = QString("%1/device.txt").arg((QStandardPaths::writableLocation(QStandardPaths::CacheLocation)));
        QString cmd = QString("%1/ffmpeg.exe -list_devices true -f dshow -i dummy 2>%2 \n")
                .arg(qApp->applicationDirPath())
                .arg(fileName);
