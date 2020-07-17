@@ -32,8 +32,8 @@ CameraManager::~CameraManager()
         m_pFramcap = nullptr;
     }
 
+    m_useCheacked = false;
     if(this->isRunning()){
-        m_useCheacked = false;
         this->wait();
         this->quit();
     }
@@ -318,7 +318,8 @@ void CameraManager::init()
 
 
     connect(this,&CameraManager::sigSendServerImg,this,[=](QImage* img){
-        m_baiduCheack->onSendServerImg(img);
+        if(m_useCheacked)
+            m_baiduCheack->onSendServerImg(img);
     });
 }
 
