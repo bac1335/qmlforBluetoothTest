@@ -171,5 +171,4 @@ void BaiduFaceManager::init()
 
     m_bIsFaceTakenOk = !(m_id.isEmpty() || m_appKey.isEmpty() || m_secretKey.isEmpty());
 
-    qDebug() << "====================444======================" << QDate::currentDate().toString("ddMMyyyy") + QTime::currentTime().toString("hhmmss") + QString::number(qrand()%10);
 }

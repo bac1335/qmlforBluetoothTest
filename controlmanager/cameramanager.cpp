@@ -9,6 +9,7 @@
 #include <QFile>
 
 #include <QElapsedTimer>
+#include <QStandardPaths>
 
 #define OldOpencv 0
 
@@ -52,11 +53,10 @@ void CameraManager::cameraInfoUpdate()
 #else
     qDebug()<<"--->lls<---" << __FUNCTION__<< "==============start_camera_info===============";
     QProcess process;
-       QString fileName = "device.txt";
+       QString fileName = QString("%1/device.txt").arg((QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)));
        QString cmd = QString("%1/ffmpeg.exe -list_devices true -f dshow -i dummy 2>%2 \n")
                .arg(qApp->applicationDirPath())
                .arg(fileName);
-
        cmd = cmd.replace("/","\\");
        process.start("cmd");
        process.waitForStarted();
@@ -64,7 +64,7 @@ void CameraManager::cameraInfoUpdate()
        process.closeWriteChannel();
        process.waitForFinished();
 
-       QFile device(qApp->applicationDirPath() + "/" + fileName);
+       QFile device(fileName);
        if(device.exists()){
            if(device.open(QIODevice::ReadOnly)){
                while(!device.atEnd()){
@@ -89,6 +89,7 @@ void CameraManager::cameraInfoUpdate()
            device.remove();
        }
 #endif
+       qDebug() << "==============device_count================" << __FUNCTION__ << m_deviceList.count();
 }
 
 QVariantList CameraManager::cameraDeviceList(int type)
@@ -211,7 +212,6 @@ void CameraManager::run()
 
 #if 1
         QImage img = cvMat2QImage(frame);
-
         if(m_needTosendImg){
             if(hasFace){
                 if(eptimer.elapsed() > 5000){
@@ -222,7 +222,6 @@ void CameraManager::run()
                 }
             }
         }
-
 
         m_pImageProvider->setImg(&img);
         emit sigUpdate();

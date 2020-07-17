@@ -13,7 +13,6 @@
 #include "opencv2/videoio.hpp"
 
 class QCamera;
-class CvCapture;
 class ImageProvider;
 class BaiduFaceManager;
 class VideoCapture;
