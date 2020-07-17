@@ -9,6 +9,9 @@
 #include <QBuffer>
 #include <QElapsedTimer>
 
+#include <QDate>
+#include <QtConcurrent/QtConcurrent>
+
 BaiduFaceManager::BaiduFaceManager(QObject *parent):
     QObject(parent)
 {
@@ -111,6 +114,7 @@ QString BaiduFaceManager::startFromStr(const QImage* img)
         qDebug() << "--->lls<---110" << __FUNCTION__  << eptimer.elapsed();
         result = client.detect(arrayImg.toBase64().toStdString(), image_type, options);
         qDebug() << "--->lls<---111" << __FUNCTION__  << eptimer.elapsed();
+
         return result.toStyledString().c_str();
     }
     else{
@@ -118,11 +122,54 @@ QString BaiduFaceManager::startFromStr(const QImage* img)
     }
 }
 
+bool BaiduFaceManager::addImgToServer(const QImage *img)
+{
+    if(m_bIsFaceTakenOk){
+         QtConcurrent::run([=](){
+
+             QImage image = *img;
+             QElapsedTimer eptimer;
+             eptimer.start();
+             std::string app_id = m_id.toStdString();
+             std::string api_key = m_appKey.toStdString();
+             std::string secret_key = m_secretKey.toStdString();
+             aip::Face client(app_id, api_key, secret_key);
+             Json::Value result;
+             std::string image_type ="BASE64";
+             qDebug() << "--->lls<---112" << __FUNCTION__  << eptimer.elapsed();
+
+             QByteArray arrayImg;
+             QBuffer buffer(&arrayImg);
+             buffer.open(QBuffer::ReadWrite);
+             image.save(&buffer,"PNG",100);
+             buffer.close();
+             qDebug() << "--->lls<---110" << __FUNCTION__  << eptimer.elapsed();
+     //        result = client.detect(arrayImg.toBase64().toStdString(), image_type, options);
+             qDebug() << "--->lls<---111" << __FUNCTION__  << eptimer.elapsed();
+             std::string group_id = QString(QDate::currentDate().toString("ddMMyyyy")).toStdString();
+             std::string user_id = QString(QDate::currentDate().toString("ddMMyyyy") + QTime::currentTime().toString("hhmmss") + QString::number(qrand()%10)).toStdString();
+             client.user_add(arrayImg.toBase64().toStdString(),image_type,group_id,user_id,aip::null);
+         });
+    }
+    return m_bIsFaceTakenOk;
+}
+
+void BaiduFaceManager::onSendServerImg(QImage *img)
+{
+    qDebug() << "===========================" __FUNCTION__;
+    if(LLSNDState->isConnected()){
+          addImgToServer(img);
+    }
+}
+
 void BaiduFaceManager::init()
 {
+    qsrand(QTime::currentTime().msec());
     m_id = LLSettings->getValue("APPTaken","AppID","").toString();
     m_appKey = LLSettings->getValue("APPTaken","APIKey","").toString();
     m_secretKey = LLSettings->getValue("APPTaken","SecretKey","").toString();
 
     m_bIsFaceTakenOk = !(m_id.isEmpty() || m_appKey.isEmpty() || m_secretKey.isEmpty());
+
+    qDebug() << "====================444======================" << QDate::currentDate().toString("ddMMyyyy") + QTime::currentTime().toString("hhmmss") + QString::number(qrand()%10);
 }

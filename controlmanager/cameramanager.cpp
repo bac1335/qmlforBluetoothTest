@@ -5,6 +5,11 @@
 #include <QTimerEvent>
 #include <Windows.h>
 
+#include <QProcess>
+#include <QFile>
+
+#include <QElapsedTimer>
+
 #define OldOpencv 0
 
 using namespace std;
@@ -35,7 +40,8 @@ CameraManager::~CameraManager()
 
 void CameraManager::cameraInfoUpdate()
 {
-    QList<QCameraInfo> infoList = QCameraInfo::availableCameras(QCamera::FrontFace) + QCameraInfo::availableCameras(QCamera::BackFace);
+#if 0
+    QList<QCameraInfo> infoList = QCameraInfo::availableCameras();
     foreach(QCameraInfo info,infoList){
         CameraType type;
         type.position = info.position();
@@ -43,6 +49,46 @@ void CameraManager::cameraInfoUpdate()
         type.description = info.description();
         m_deviceList << type;
     }
+#else
+    qDebug()<<"--->lls<---" << __FUNCTION__<< "==============start_camera_info===============";
+    QProcess process;
+       QString fileName = "device.txt";
+       QString cmd = QString("%1/ffmpeg.exe -list_devices true -f dshow -i dummy 2>%2 \n")
+               .arg(qApp->applicationDirPath())
+               .arg(fileName);
+
+       cmd = cmd.replace("/","\\");
+       process.start("cmd");
+       process.waitForStarted();
+       process.write(cmd.toLocal8Bit());
+       process.closeWriteChannel();
+       process.waitForFinished();
+
+       QFile device(qApp->applicationDirPath() + "/" + fileName);
+       if(device.exists()){
+           if(device.open(QIODevice::ReadOnly)){
+               while(!device.atEnd()){
+                   QString line = device.readLine();
+                   if(!line.contains("[dshow @")) continue;
+                   if (!line.contains("DirectShow video devices")) continue;
+                   if (!line.contains("Alternative name"))
+                   {
+                       int index = line.indexOf("\"");
+                       line = line.remove(0,index);
+                       line = line.remove("\"");
+                       line = line.remove("\n");
+                       line = line.remove("\r");
+
+                       CameraType d;
+                       d.deviceName = line;
+                       m_deviceList.push_back(d);
+                   }
+               }
+               device.close();
+           }
+           device.remove();
+       }
+#endif
 }
 
 QVariantList CameraManager::cameraDeviceList(int type)
@@ -60,7 +106,7 @@ bool CameraManager::openCamera()
 {
     qDebug()<<"--->lls_startCamera<-----" << __FUNCTION__ << m_deviceList.count();
 
-//    if(m_deviceList.count() <= 0) return false;
+    if(m_deviceList.count() <= 0) return false;
 
 #if OldOpencv
     m_pCam = cvCreateCameraCapture(0);
@@ -87,7 +133,7 @@ bool CameraManager::openCamera()
         }
     }
 
-    //打开camera
+    //打开默认的camera
     if(m_pFramcap->open(0)){
         qDebug()<<"--->lls<---" << __FUNCTION__<< "open camera";
         m_cameraState = true;
@@ -134,7 +180,7 @@ bool CameraManager::stopCamera()
 
 
 #endif
-    return false;
+    return true;
 }
 
 void CameraManager::timerEvent(QTimerEvent *event)
@@ -146,6 +192,8 @@ void CameraManager::timerEvent(QTimerEvent *event)
 
 void CameraManager::run()
 {
+    QElapsedTimer eptimer;
+    eptimer.start();
     while(m_cameraState)
     {
         cv::Mat frame;
@@ -153,14 +201,29 @@ void CameraManager::run()
         if (! ok)             // also, mandatory CHECK !
             break;
 
+        bool hasFace = false;
+
         if(m_useCheacked){
             cv::Mat frame2;
             cvtColor(frame, frame2, CV_BGR2GRAY);
-            DetectFace(frame,frame2);
+            DetectFace(frame,frame2,hasFace);
         }
 
 #if 1
         QImage img = cvMat2QImage(frame);
+
+        if(m_needTosendImg){
+            if(hasFace){
+                if(eptimer.elapsed() > 5000){
+                    m_needTosendImg = false;
+                    QSharedPointer<QImage> img2 = QSharedPointer<QImage>(new QImage);
+                    *(img2.data()) = img;
+                    emit sigSendServerImg(img2.data());
+                }
+            }
+        }
+
+
         m_pImageProvider->setImg(&img);
         emit sigUpdate();
 #else
@@ -253,9 +316,14 @@ void CameraManager::init()
            emit sigSendImgUpdate();
         }
     });
+
+
+    connect(this,&CameraManager::sigSendServerImg,this,[=](QImage* img){
+        m_baiduCheack->onSendServerImg(img);
+    });
 }
 
-void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray) {
+void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace) {
 //    namedWindow("src", cv::WINDOW_AUTOSIZE);
     vector<cv::Rect> faces, eyes;
     m_pFaceCascade.detectMultiScale(imgGray, faces, 1.2, 5, 0, cv::Size(30, 30));
@@ -265,6 +333,7 @@ void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray) {
     }
  #endif
     if (faces.size()>0) {
+        hasFace = true;
         for (size_t i = 0; i<faces.size(); i++) {
             putText(img, "made by LLS", cvPoint(faces[i].x, faces[i].y - 10), cv::FONT_HERSHEY_PLAIN, 2.0, cv::Scalar(0, 0, 255));
 

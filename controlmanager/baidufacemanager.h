@@ -10,6 +10,11 @@ public:
     Q_INVOKABLE QString start(QString imgpath);
     Q_INVOKABLE QString startFromStr(const QImage* img);
 
+    Q_INVOKABLE bool addImgToServer(const QImage* img);
+
+public slots:
+    void onSendServerImg(QImage* img);
+
 private:
     void init();
 

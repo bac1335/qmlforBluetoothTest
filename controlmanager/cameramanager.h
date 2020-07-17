@@ -44,13 +44,14 @@ protected:
 private:
     void init();
     inline void doTimeOut();
-    void DetectFace(cv::Mat& img,cv::Mat& imgGray);
+    void DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace);
     inline QImage cvMat2QImage(const cv::Mat& mat);
     inline cv::Mat QImage2cvMat(QImage image);
 
 signals:
     void sigSendImgUpdate();
     void sigUpdate();
+    void sigSendServerImg(QImage*);
 
 private:
     QCamera*            m_camara = nullptr;
@@ -68,6 +69,7 @@ private:
     cv::CascadeClassifier m_pFaceCascade;
     cv::CascadeClassifier m_pAreCascade;
     bool                m_useCheacked = true;
+    bool                m_needTosendImg = true;
 };
 
 
@@ -95,7 +97,7 @@ public:
     }
 
 private:
-    QImage*         m_pImg = nullptr;
+    QImage*         m_pImg = nullptr;         
 };
 
 #endif // CAMERAMANAGER_H

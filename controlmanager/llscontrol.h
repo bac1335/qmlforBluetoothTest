@@ -19,6 +19,8 @@ private:
      //需要再QQmlApplicationEngine导入界面之前注册信号槽
     void registerqmlConnect();
 
+    void regisConnect();
+
 private:
     QQmlApplicationEngine*          m_pEngine = nullptr;
     BoothManage*                    m_pBoothManager = nullptr;
