@@ -11,6 +11,7 @@
 #include <QtQuick/QQuickImageProvider>
 #include "opencv2/opencv.hpp"
 #include "opencv2/videoio.hpp"
+#include <QElapsedTimer>
 
 class QCamera;
 class ImageProvider;
@@ -29,7 +30,7 @@ public:
     ~CameraManager();
     void  cameraInfoUpdate();
     ImageProvider* getImgProvider(){return m_pImageProvider;}
-    void setBaiduCheack(BaiduFaceManager* baidu){m_baiduCheack = baidu;};
+    void setBaiduCheack(BaiduFaceManager* baidu){m_baiduCheack = baidu;}
 
     Q_INVOKABLE QVariantList cameraDeviceList(int type);
     Q_INVOKABLE bool openCamera();
@@ -43,7 +44,7 @@ protected:
 private:
     void init();
     inline void doTimeOut();
-    void DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace);
+    void DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace,QElapsedTimer& elaps);
     inline QImage cvMat2QImage(const cv::Mat& mat);
     inline cv::Mat QImage2cvMat(QImage image);
 

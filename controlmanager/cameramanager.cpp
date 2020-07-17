@@ -8,7 +8,6 @@
 #include <QProcess>
 #include <QFile>
 
-#include <QElapsedTimer>
 #include <QStandardPaths>
 
 #define OldOpencv 0
@@ -194,7 +193,9 @@ void CameraManager::timerEvent(QTimerEvent *event)
 void CameraManager::run()
 {
     QElapsedTimer eptimer;
-    eptimer.start();
+
+//    eptimer.start();
+
     while(m_cameraState)
     {
         cv::Mat frame;
@@ -207,14 +208,14 @@ void CameraManager::run()
         if(m_useCheacked){
             cv::Mat frame2;
             cvtColor(frame, frame2, CV_BGR2GRAY);
-            DetectFace(frame,frame2,hasFace);
+            DetectFace(frame,frame2,hasFace,eptimer);
         }
 
 #if 1
         QImage img = cvMat2QImage(frame);
         if(m_needTosendImg){
             if(hasFace){
-                if(eptimer.elapsed() > 5000){
+                if(eptimer.elapsed() > 2000){
                     m_needTosendImg = false;
                     QSharedPointer<QImage> img2 = QSharedPointer<QImage>(new QImage);
                     *(img2.data()) = img;
@@ -323,7 +324,7 @@ void CameraManager::init()
     });
 }
 
-void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace) {
+void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace,QElapsedTimer& elaps) {
 //    namedWindow("src", cv::WINDOW_AUTOSIZE);
     vector<cv::Rect> faces, eyes;
     m_pFaceCascade.detectMultiScale(imgGray, faces, 1.2, 5, 0, cv::Size(30, 30));
@@ -334,9 +335,12 @@ void CameraManager::DetectFace(cv::Mat& img,cv::Mat& imgGray,bool&  hasFace) {
  #endif
     if (faces.size()>0) {
         hasFace = true;
+
+        if(!elaps.isValid()) elaps.start();
+
+        if(m_needTosendImg) return;
         for (size_t i = 0; i<faces.size(); i++) {
             putText(img, "made by LLS", cvPoint(faces[i].x, faces[i].y - 10), cv::FONT_HERSHEY_PLAIN, 2.0, cv::Scalar(0, 0, 255));
-
             rectangle(img, cv::Point(faces[i].x, faces[i].y), cv::Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height), cv::Scalar(0, 0, 255), 1, 8);
 #if 0
             cout << faces[i] << endl;
