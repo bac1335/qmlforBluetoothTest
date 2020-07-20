@@ -12,6 +12,8 @@
 #include <QDate>
 #include <QtConcurrent/QtConcurrent>
 
+#include "llsutilities.h"
+
 BaiduFaceManager::BaiduFaceManager(QObject *parent):
     QObject(parent)
 {
@@ -168,6 +170,12 @@ void BaiduFaceManager::init()
     m_id = LLSettings->getValue("APPTaken","AppID","").toString();
     m_appKey = LLSettings->getValue("APPTaken","APIKey","").toString();
     m_secretKey = LLSettings->getValue("APPTaken","SecretKey","").toString();
+
+    if(m_id.isEmpty() || m_appKey.isEmpty() || m_appKey.isEmpty()){
+        m_id = LLSUtilities::SimpleEncryption(LLSettings->getValue("APPTakenEncryption","AppID","").toString(),NOMALKEY);
+        m_appKey = LLSUtilities::SimpleEncryption(LLSettings->getValue("APPTakenEncryption","APIKey","").toString(),NOMALKEY);
+        m_secretKey = LLSUtilities::SimpleEncryption(LLSettings->getValue("APPTakenEncryption","SecretKey","").toString(),NOMALKEY);
+    }
 
     m_bIsFaceTakenOk = !(m_id.isEmpty() || m_appKey.isEmpty() || m_secretKey.isEmpty());
 

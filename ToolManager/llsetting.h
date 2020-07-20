@@ -2,6 +2,11 @@
 #define LLSETTING_H
 #include <QSharedPointer>
 
+/**
+    * @brief         全局参数设定
+    * @date          2020-07-20
+    */
+
 #define LLSettings LLSetting::instance()
 
 class QSettings;

@@ -9,9 +9,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 #CONFIG += console
 
 include($$PWD/baiduface/baiduface.pri)
+include($$PWD/LibraryManager/LibraryManager.pri)
 include($$PWD/ToolManager/ToolManager.pri)
 
-INCLUDEPATH += ToolManager baiduface controlmanager bluetooth tool
+INCLUDEPATH += baiduface controlmanager bluetooth
 
 CONFIG(release,release|debug){
     DESTDIR += $$PWD/bin/
@@ -42,8 +43,6 @@ SOURCES += \
         controlmanager/cameramanager.cpp \
         controlmanager/llscontrol.cpp \
         main.cpp \
-        tool/llsetting.cpp \
-        tool/llsnetworkdetection.cpp \
         widget.cpp
 
 HEADERS += \
@@ -51,8 +50,6 @@ HEADERS += \
         controlmanager/boothmanager.h \
         controlmanager/cameramanager.h \
         controlmanager/llscontrol.h \
-        tool/llsetting.h \
-        tool/llsnetworkdetection.h \
         widget.h
 
 # Default rules for deployment.

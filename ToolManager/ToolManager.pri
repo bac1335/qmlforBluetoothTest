@@ -1,8 +1,16 @@
-include($$PWD/curl_x86-windows/curl.pri)
-include($$PWD/jsoncpp_x86-windows/jsoncpp.pri)
-include($$PWD/openssl-windows_x86-windows/openssl.pri)
-win32 {
-    CONFIG(release, debug|release) {
-       include($$PWD/opencv/opencv.pri)
-    }
-}
+##################################################
+#@brief         常用工具类的集合
+#@date          2020-07-20
+##################################################
+
+INCLUDEPATH += $$PWD
+
+HEADERS += \
+    $$PWD/llsetting.h \
+    $$PWD/llsnetworkdetection.h \
+    $$PWD/llsutilities.h
+
+SOURCES += \
+    $$PWD/llsetting.cpp \
+    $$PWD/llsnetworkdetection.cpp \
+    $$PWD/llsutilities.cpp
