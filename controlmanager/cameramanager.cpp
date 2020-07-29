@@ -33,7 +33,7 @@ CameraManager::~CameraManager()
 
     m_useCheacked = false;
     if(this->isRunning()){
-        this->wait();
+        this->terminate();
         this->quit();
     }
 }
@@ -174,10 +174,9 @@ bool CameraManager::stopCamera()
     }
 #else
    m_cameraState = false;  //这一瞬间可能子线程访问的是true，导致异常
-   this->wait();
+   this->terminate();
    this->quit();
    m_pFramcap->release();
-
 
 #endif
     return true;

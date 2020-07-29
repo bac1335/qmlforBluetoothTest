@@ -14,7 +14,7 @@ LLSNetworkDetction::LLSNetworkDetction(QThread *parent):
 LLSNetworkDetction::~LLSNetworkDetction()
 {
     m_bRunState = false;
-    this->wait();
+    this->terminate();
     this->quit();
 }
 
